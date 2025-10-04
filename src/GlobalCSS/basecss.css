@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;1,100;1,200;1,300&display=swap");
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --header-mobile-height: 70px;
+
+}
+
+html {
+    font-size: 62.5%;
+    font-family: "Poppins", sans-serif;
+}
+
+a[href] {
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+}
+
+ul {
+    padding-left: 0px;
+    list-style: none;
+}
+
+.slick-slider.slick-initialized {
+    overflow: hidden;
+}
+
+/* .slick-list {
+    padding-left: 0.8% !important;
+} */
+
+.slick-arrow {
+    z-index: 10;
+}
+
+.slick-arrow::before {
+    color: red !important;
+    font-size: 2.4rem !important;
+}
+
+.slick-prev {
+    left: 0 !important;
+}
+
+.slick-next {
+    right: 0 !important;
+}
+
+.swiper-slide img {
+    object-fit: contain;
+}
+
+@media (min-width: 1440px) {
+    .swiper-wrapper {
+        width: 1440px;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .swiper-wrapper {
+        width: 1279px;
+    }
+}
+
+@media (min-width: 768px) {
+    .swiper-wrapper {
+        width: 768px;
+        height: 420px;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 739px) {
+    .swiper-wrapper {
+        width: 739px;
+        height: 460px;
+    }
+
+    .swiper-pagination-bullet {
+        width: 15px;
+        height: 15px;
+        margin: 0 12px !important;
+    }
+
+    .swiper-slide img {
+        object-fit: unset;
+    }
+}
+
+/* styles.css */
+[data-amplify-theme] {
+    --amplify-components-link-color: var(--amplify-colors-red-80)!important;
+    --amplify-components-link-hover-color: var(--amplify-colors-yellow-80);
+    /* --amplify-components-link-active-color: 
+    --amplify-components-link-focus-color:
+    --amplify-components-link-visited-color:  */
+  }

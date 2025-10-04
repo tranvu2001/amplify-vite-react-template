@@ -1,0 +1,9 @@
+.search-tab {
+    width: 944px;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+.tabs > .amplify-tabs__list > button {
+    font-size: 16px;
+}
