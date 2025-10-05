@@ -1,0 +1,64 @@
+/* Ẩn icon mặc định của Swiper */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  content: none !important;
+  background: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  display: none !important;
+}
+
+.swiper-button-prev > svg,
+.swiper-button-next > svg {
+  display: none;
+}
+
+/* Tạo kiểu nút tròn trong suốt */
+.swiper-button-prev,
+.swiper-button-next {
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(6px);
+  transition: all 0.25s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Hover effect */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: rgba(255, 255, 255, 1);
+  border-color: rgba(0, 0, 0, 0.25);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Icon mũi tên */
+.swiper-button-prev::before,
+.swiper-button-next::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #222;
+  border-right: 2px solid #222;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(225deg);
+}
+
+/* Mũi tên phải */
+.swiper-button-next::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Điều chỉnh vị trí hai nút */
+.swiper-button-prev {
+  left: -15px;
+}
+.swiper-button-next {
+  right: -15px;
+}

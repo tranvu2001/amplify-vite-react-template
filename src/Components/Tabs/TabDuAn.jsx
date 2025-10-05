@@ -3,7 +3,7 @@ import PriceFilter from "./PriceFilter";
 
 function TabDuAn() {
     return (
-        <View as={"div"} width={"945px"} marginTop={"10px"} left={"calc(50% - 504.5px)"}>
+        <View as={"div"}>
         <SearchField size="large" label="Nhập tỉnh thành" placeholder="Nhập tỉnh thành"/>
         <Flex justifyContent={"space-between"}>
             {/* <SelectField   descriptiveText="Chọn tỉnh thành">

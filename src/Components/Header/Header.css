@@ -2,11 +2,13 @@
     background-color: #fff;
     height: 80px;
     padding: 15px 17px;
-    /* position: fixed; */
+    position: sticky;
+    box-shadow: 1px 6px 10px -3px rgba(99,91,91,0.7);
+    -webkit-box-shadow: 1px 6px 10px -3px rgba(99,91,91,0.7);
+    -moz-box-shadow: 1px 6px 10px -3px rgba(99,91,91,0.7);
 }
 
 .header-nav-link {
     font-size: 16px !important;
     color: #2c2c2c !important;
 }
-

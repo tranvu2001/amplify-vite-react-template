@@ -1,4 +1,4 @@
-import { Tabs } from "@aws-amplify/ui-react";
+import { Tabs, View } from "@aws-amplify/ui-react";
 import TabNhaDatBan from "./TabNhaDatBan";
 import '../Tabs/searchTab.css'
 import TabNhaDatChoThue from "./TabNhaDatChoThue";
@@ -7,7 +7,7 @@ import TabDuAn from "./TabDuAn";
 function SearchTab() {
     return (
         <>
-            <div className="search-tab">
+            <View className="search-tab">
                 <Tabs width={"50%"}
                     className="tabs"
                     
@@ -27,7 +27,7 @@ function SearchTab() {
                         </>)}
                     ]}
                 />
-            </div>
+            </View>
         </>
     )
 }
