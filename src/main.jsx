@@ -8,11 +8,12 @@ import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom'
-import Home from "./Pages/Home.jsx";
-import Contact from "./Pages/Contact.jsx";
-import About from "./Pages/About.jsx";
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
+
 
 Amplify.configure(outputs);
+ModuleRegistry.registerModules([AllCommunityModule]);
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
