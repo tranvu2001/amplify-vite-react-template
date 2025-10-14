@@ -1,9 +1,10 @@
-import { Flex, Heading, View, Button } from "@aws-amplify/ui-react";
+import { Flex, Heading, View, Button, Label, TextField } from "@aws-amplify/ui-react";
 import { AgGridReact } from "ag-grid-react";
 import Header from "../../Components/Header/Header";
 import PropertyServices from "../../axios/PropertyServices";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactModal from "react-modal";
 
 const ListProperties = () => {
     const [listProperties, setListProperties] = useState([]);
@@ -25,11 +26,12 @@ const ListProperties = () => {
     const [colDefs, setColDefs] = useState([
         { field: "title", headerName: "Tên", flex: 1, filter: true },
         { field: "address", headerName: "Địa chỉ", flex: 1, filter: true },
-        { field: "district", headerName: "Quận", flex: 1, filter: true},
+        { field: "district", headerName: "Quận", flex: 1, filter: true },
         { field: "city", headerName: "Thành phố", flex: 1, filter: true },
-        { field: "price", headerName: "Giá", flex: 1, valueFormatter: params => {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(params.value);
-        }, filter: true
+        {
+            field: "price", headerName: "Giá", flex: 1, valueFormatter: params => {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(params.value);
+            }, filter: true
         }, // Giá đã được format 
         {
             field: 'buttonAction',
@@ -42,27 +44,29 @@ const ListProperties = () => {
                         Xem
                     </Button>
                     <Button
-                        
+
 
                     >
                         Sửa
                     </Button>
                     <Button
-                        
+
 
                     >
                         Xóa
                     </Button>
                 </Flex>
             )
-        }  
+        }
 
     ])
 
     const handlePropertyDetail = (rowData) => {
         navigate(`/list-properties/${rowData.propertyId}`);
     }
-    
+
+
+
     const pagination = true
     const paginationPageSize = 500
     const paginationPageSizeSelector = [10, 200, 500, 1000]
@@ -115,12 +119,95 @@ const ListProperties = () => {
         },
         content: {
             // minHeight: "100%",
-            
+
 
         },
     };
 
-    
+    const [typeModal, setTypeModal] = useState("");
+
+    let subtitle;
+    const [isOpen, setIsOpen] = useState(false);
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    function afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        subtitle.style.color = '#f00';
+    }
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
+    const handleSubmitAddProperty = (e) => {
+        e.preventDefault();
+        closeModal();
+    }
+
+    const handleUpdateProperty = (rowData) => {
+        console.log("Cập nhật thông tin bất động sản", rowData);
+        setTypeModal("update"); // Cập nhật loại modal
+        setIsOpen(true);
+    }
+
+    const renderContentModal = (type) => {
+        switch (type) {
+            case "create":
+                return <><Flex gap={16} justifyContent={"space-between"} alignItems={"center"} marginBottom={20}>
+                    <Heading level={2} ref={(_subtitle) => (subtitle = _subtitle)}>Thêm bất động sản</Heading>
+                    <Button onClick={closeModal}>close</Button>
+                </Flex>
+                    <form onSubmit={handleSubmitAddProperty}>
+                        <Flex direction="column" gap={16}>
+                            <View>
+                                <Label htmlFor="name" style={{ fontSize: "20px" }}>Tên</Label>
+                                <TextField
+                                    
+                                />
+                            </View>
+                            <View>
+                                <Label htmlFor="email" style={{ fontSize: "20px" }}>Email</Label>
+                                <TextField
+                                    
+                                />
+                            </View>
+                        </Flex>
+                        <Button type="submit" style={{ marginTop: "20px" }}>Thêm</Button>
+                    </form></>
+
+            case "update":
+                return <><Flex gap={16} justifyContent={"space-between"} alignItems={"center"} marginBottom={20}>
+                    <Heading level={2} ref={(_subtitle) => (subtitle = _subtitle)}>Sửa bất động sản</Heading>
+                    <Button onClick={closeModal}>close</Button>
+                </Flex>
+                    <form onSubmit={handleSubmitAddProperty}>
+                        <Flex direction="column" gap={16}>
+                            <View>
+                                <Label htmlFor="name" style={{ fontSize: "20px" }}>Tên</Label>
+                                <TextField
+                                    
+                                />
+                            </View>
+                            <View>
+                                <Label htmlFor="email" style={{ fontSize: "20px" }}>Email</Label>
+                                <TextField
+                                   
+                                />
+                            </View>
+                        </Flex>
+                        <Button type="submit" style={{ marginTop: "20px" }}>Cập nhật</Button>
+                    </form></>
+
+            case "detail":
+                return <div>User Detail Information</div>
+
+            default:
+                return <div>Default Modal Content</div>
+        }
+    }
 
     return (
         <View>
@@ -130,7 +217,10 @@ const ListProperties = () => {
             <View style={{ height: 500, margin: '20px 40px 0 40px' }}>
                 <Flex alignItems={"center"} justifyContent={"space-between"}>
                     <Heading level={1} fontWeight={700} marginBottom={10} >Danh sách bất động sản</Heading>
-                    <Button >Thêm bất động sản</Button>
+                    <Button onClick={() => {
+                        setTypeModal("create"); // Đặt loại modal là "create"
+                        setIsOpen(true); // Mở modal
+                     }}>Thêm bất động sản</Button>
                 </Flex>
                 <AgGridReact
                     localeText={localeText}
@@ -143,7 +233,17 @@ const ListProperties = () => {
             </View>
 
             {/* Modal */}
-            
+            <ReactModal
+                isOpen={isOpen}
+                onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+            >
+                {renderContentModal(typeModal)}
+
+
+            </ReactModal>
 
         </View>
     )

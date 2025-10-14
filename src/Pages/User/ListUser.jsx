@@ -319,32 +319,6 @@ function ListUser() {
     return (
         <View id="about">
             <Header />
-            {/* <SelectField>
-                {listUser.map((user) => (
-                    <option key={user.userId} value={user.userId}>{user.name}</option>
-                ))}
-            </SelectField> */}
-
-
-            {/* <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell as="th">UserId</TableCell>
-                        <TableCell as="th">Name</TableCell>
-                        <TableCell as="th">Email</TableCell>
-                    </TableRow>
-                    {
-                        listUser.map(user => (
-                            <TableRow key={user.userId}>
-                                <TableCell >{user.userId}</TableCell>
-                                <TableCell >{user.name}</TableCell>
-                                <TableCell >{user.email}</TableCell>
-                            </TableRow>
-                        ))
-                    }
-
-                </TableHead>
-            </Table> */}
 
             {/* Danh sách người dùng */}
             <View style={{ height: 500, margin: '20px 40px 0 40px' }}>

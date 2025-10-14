@@ -37,7 +37,7 @@ const PropertyDetail = () => {
                         </Flex>
                         <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                             <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Giá</Text>
-                            <Text fontSize={16} style={{ color: "#333" }}>{new Intl.NumberFormat('vi-VN').format(property.price) + ' ' + property.currency}</Text>
+                            <Text fontSize={16} style={{ color: "#333" }}>{new Intl.NumberFormat('vi-VN').format(property?.price) + ' ' + property.currency}</Text>
                         </Flex>
                         <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                             <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Trạng thái</Text>
@@ -53,11 +53,11 @@ const PropertyDetail = () => {
                         </Flex>
                         <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                             <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Ngày đăng</Text>
-                            <Text fontSize={16} style={{ color: "#333" }}>{new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property.createdAt))}</Text>
+                            <Text fontSize={16} style={{ color: "#333" }}>{property.createdAt ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.createdAt)) : "Không có dữ liệu"}</Text>
                         </Flex>
                         <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                             <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Ngày chỉnh sửa</Text>
-                            <Text fontSize={16} style={{ color: "#333" }}>{new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property.updatedAt))}</Text>
+                            <Text fontSize={16} style={{ color: "#333" }}>{property.updatedAt ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.updatedAt)) : "Không có dữ liệu"}</Text>
                         </Flex>
 
                         <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
