@@ -6,7 +6,8 @@ import App from "./App.jsx";
 import "./GlobalCSS/basecss.css";
 import '@aws-amplify/ui-react/styles.css';
 
-
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+ModuleRegistry.registerModules([ AllCommunityModule ]);
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom'
 
 
