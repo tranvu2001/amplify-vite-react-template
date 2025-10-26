@@ -10,6 +10,18 @@ class PropertyServices {
     getPropertyById(propertyId) {
         return axios.get(PROPERTY_API_URL+ '/' +propertyId);
     }
+
+    createProperty(property) {
+        return axios.post(PROPERTY_API_URL, property);
+    }
+
+    updateProperty(propertyId, property) {
+        return axios.put(PROPERTY_API_URL + '/' + propertyId, property);
+    }
+
+    deleteProperty(propertyId) {
+        return axios.delete(PROPERTY_API_URL + '/' + propertyId);
+    }
 }
 
 export default new PropertyServices()

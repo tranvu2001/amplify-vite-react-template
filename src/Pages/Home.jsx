@@ -11,7 +11,7 @@ import BannerMiddle from "../Components/Banner/BannerMiddle.jsx";
 function Home() {
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <Banner />
             <View className="section-for-you" margin={"40px 141px"}>
                 <Flex alignItems={"center"} justifyContent={"space-between"}>

@@ -27,7 +27,7 @@ function ListUser() {
     const [listProperty, setListProperty] = useState([])
     // Row Data
     const [rowData, setRowData] = useState([])
-
+    const [userId, setUserId] = useState(null)
     // Input state
     const [input, setInput] = useState({
         name: "",
@@ -68,7 +68,7 @@ function ListUser() {
 
     const handleSubmitUpdateUser = (e) => {
         e.preventDefault();
-        // Validate các trường
+        //Validate các trường
 
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex kiểm tra định dạng email
@@ -77,7 +77,7 @@ function ListUser() {
             return;
         }
         console.log("Form submitted:", input);
-        UserServices.updateUser(input).then(res => {
+        UserServices.updateUser(input, userId).then(res => {
             console.log("User updated successfully:", res.data);
             setIsOpen(false);
             // Tải lại danh sách người dùng sau khi thêm mới
@@ -88,6 +88,7 @@ function ListUser() {
         }).catch(err => {
             console.error("Error updating user:", err);
         });
+        console.log(userId)
 
     }
 
@@ -146,7 +147,7 @@ function ListUser() {
         setInput({name: rowData.name, email: rowData.email})// Điền dữ liệu vào form
         setTypeModal("update"); // Cập nhật loại modal
         setIsOpen(true);
-
+        setUserId(rowData.userId);
     };
 
     const handleDeleteUser = (rowData) => {
@@ -318,7 +319,7 @@ function ListUser() {
 
     return (
         <View id="about">
-            <Header />
+            {/* <Header /> */}
 
             {/* Danh sách người dùng */}
             <View style={{ height: 500, margin: '20px 40px 0 40px' }}>

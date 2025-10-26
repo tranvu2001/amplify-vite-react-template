@@ -6,6 +6,7 @@
     box-shadow: 1px 6px 10px -3px rgba(99,91,91,0.7);
     -webkit-box-shadow: 1px 6px 10px -3px rgba(99,91,91,0.7);
     -moz-box-shadow: 1px 6px 10px -3px rgba(99,91,91,0.7);
+    margin-bottom: 20px;
 }
 
 .header-nav-link {
