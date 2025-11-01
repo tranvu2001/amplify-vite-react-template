@@ -16,6 +16,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import { fetchAuthSession, fetchUserAttributes, signOut } from 'aws-amplify/auth';
 import Header from "./Components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import ListTransaction from "./Pages/Transaction/ListTransaction";
 
 
 // Amplify.configure({
@@ -48,15 +49,15 @@ function App() {
       // Trả về token, thời gian hết hạn, v.v.
     });
 
-   
+
   }
 
   return <>
-  <Header  />
-    
+    <Header />
+
     <Authenticator loginMechanisms={['email']}
       signUpAttributes={[
-        
+
         'birthdate',
         'email',
         'name',
@@ -72,17 +73,19 @@ function App() {
           <button onClick={userAttributes}>Get User Attributes</button>
         </main>
       )}
-         
+
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<Dashboard />} >
-        <Route index  element={<ListUser />} />
-        <Route  path="/list-user"  element={<ListUser />} />
-        <Route path="/list-user/:userId" element={<UserDetail />} />
-        <Route path="/list-properties" element={<ListProperties />} />
-        <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
+          <Route index element={<ListUser />} />
+          <Route path="/list-user" element={<ListUser />} />
+          <Route path="/list-user/:userId" element={<UserDetail />} />
+          <Route path="/list-properties" element={<ListProperties />} />
+          <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
+          {/* <Route path="/list-transaction" element={<ListTransaction />} />
+          <Route path="/list-transaction/:transactionId" element={<ListTransaction />} /> */}
         </Route>
-        
+
       </Routes>
 
     </Authenticator>

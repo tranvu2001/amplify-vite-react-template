@@ -38,6 +38,10 @@ export default function Sidebar() {
                 <NavLink to="/list-properties" style={linkStyle}>
                     Quản lý bất động sản
                 </NavLink>
+
+                {/* <NavLink to="/list-transaction" style={linkStyle}>
+                    Quản lý giao dịch
+                </NavLink> */}
             </Flex>
         </View>
     );

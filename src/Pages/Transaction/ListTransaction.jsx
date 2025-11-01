@@ -1,72 +1,24 @@
+import { useNavigate } from "react-router-dom";
 import { Flex, Heading, View, Button, Label, TextField, SelectField } from "@aws-amplify/ui-react";
 import { AgGridReact } from "ag-grid-react";
-import Header from "../../Components/Header/Header";
-import PropertyServices from "../../axios/PropertyServices";
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+
 import ReactModal from "react-modal";
-
-import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth';
-import UserServices from "../../axios/UserServices";
-
-const ListProperties = () => {
-    const [listProperties, setListProperties] = useState([]);
-
-    const [currentUser, setCurrentUser] = useState(null);
-
-    const [listUser, setListUser] = useState([]);
-    const [propertyId, setPropertyId] = useState("");
-    const userAttributes = () => {
-        //   fetchUserAttributes().then(attributes => {
-        //     console.log('Full user attributes:', attributes);
-        //     // Ví dụ: attributes.email, attributes.name, attributes.birthdate, ...
-        //   });
-
-        fetchAuthSession().then(session => {
-            console.log('Full user session:', session);
-            // Trả về token, thời gian hết hạn, v.v.
-            setCurrentUser(session);
-        });
-
-    }
-    // console.log("Current User:", currentUser.tokens.idToken.payload);
-
-    // Định nghĩa các hàng dữ liệu
-    const [rowData, setRowData] = useState([]);
-
-    // Input state
-    const [input, setInput] = useState({
-        title: "",
-        address: "",
-        district: "",
-        city: "",
-        price: "",
-        currency: "VND",
-        listingType: "SALE",
-        type: "HOUSE",
-        status: "PUBLISHED",
-        ownerId: "",
-
-    })
-
-
+import { use } from "react";
+import TransactionServices from "../../axios/TransactionServices";
+const ListTransaction = () => {
+    
     const navigate = useNavigate();
+    const [rowData, setRowData] = useState([])
+
+    const [input, setInput] = useState({})
 
     useEffect(() => {
-        PropertyServices.getAllProperties().then((response) => {
-            setListProperties(response.data);
-            setRowData(response.data);
+        TransactionServices.getAllTransactions().then((response) => {
             console.log(response.data);
-        })
-
-        UserServices.getAllUser().then((response) => {
-            setListUser(response.data);
-            console.log("List User:", response.data);
-        })
-    }, []);
-
-
-
+            setRowData(response.data);
+        })  
+    }, [])
 
     const [colDefs, setColDefs] = useState([
         { field: "title", headerName: "Tên", flex: 1, filter: true },
@@ -84,11 +36,11 @@ const ListProperties = () => {
             cellRenderer: (params) => (
                 <Flex gap={8} margin={10}>
                     <Button
-                        onClick={() => handlePropertyDetail(params.data)}
+                        onClick={() => handleTransactionDetail(params.data)}
                     >
                         Xem
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={() => handleUpdateProperty(params.data)}
 
                     >
@@ -99,31 +51,24 @@ const ListProperties = () => {
 
                     >
                         Xóa
-                    </Button>
+                    </Button> */}
                 </Flex>
             )
         }
 
     ])
 
+    const handleTransactionDetail = (rowData) => {
+        console.log("Transaction Detail");
+        navigate(`/list-transaction/${rowData.txnId}`)
+    }
+
     const handlePropertyDetail = (rowData) => {
-        navigate(`/list-properties/${rowData.propertyId}`);
+        
     }
 
     const handleDeleteProperty = (rowData) => {
-        console.log("Xóa bất động sản", rowData);
-        if (window.confirm(`Bạn có chắc chắn muốn xóa bất động sản ${rowData.title}?`)) {
-            PropertyServices.deleteProperty(rowData.propertyId).then(res => {
-                console.log("Property deleted successfully:", res.data);
-                // Tải lại danh sách tài sản sau khi xóa thành công
-                PropertyServices.getAllProperties().then(res => {
-                    setListProperties(res.data)
-                    setRowData(res.data)
-                })
-            }).catch(err => {
-                console.error("Error deleting property:", err);
-            });
-        }
+        
 
     }
 
@@ -210,72 +155,17 @@ const ListProperties = () => {
             [e.target.name]: e.target.value
         }))
 
-        console.log("Input change:", input);
-
     }
 
     const handleSubmitAddProperty = (e) => {
-        e.preventDefault();
-        console.log("Thêm tài sản:", input);
-        PropertyServices.createProperty(input).then((res) => {
-            console.log("Property created successfully:", res.data);
-            closeModal();
-            PropertyServices.getAllProperties().then((response) => {
-                setRowData(response.data);
-            });
-        }).catch((err) => {
-            console.error("Error creating property:", err);
-        });
-        // console.log("owner Id: ", input);
+        
     }
 
     const handleSubmitUpdateProperty = (e) => {
-        e.preventDefault();
-        console.log("Form submitted:", input);
-        PropertyServices.updateProperty(propertyId, input).then((res) => {
-            console.log("Property updated successfully:", res.data);
-            setIsOpen(false);
-            PropertyServices.getAllProperties().then((response) => {
-                setListProperties(response.data);
-                setRowData(response.data);
-            })
-            setInput({
-                title: "",
-                address: "",
-                district: "",
-                city: "",
-                price: "",
-                currency: "VND",
-                listingType: "SALE",
-                type: "HOUSE",
-                status: "PUBLISHED",
-                ownerId: "",
-            });
-        }).catch((err) => {
-            console.error("Error updating property:", err);
-        })
-
-        // console.log(propertyId)
-        // console.log("abc")
+        
     }
 
     const handleUpdateProperty = (rowData) => {
-        console.log("Cập nhật thông tin bất động sản", rowData);
-        setInput({
-            title: rowData.title,
-            address: rowData.address,
-            district: rowData.district,
-            city: rowData.city,
-            price: rowData.price,
-            currency: rowData.currency,
-            listingType: rowData.listingType,
-            type: rowData.type,
-            status: rowData.status,
-            ownerId: rowData.ownerId,
-        });
-        setTypeModal("update"); // Cập nhật loại modal
-        setIsOpen(true);
-        setPropertyId(rowData.propertyId);
         
     }
 
@@ -378,9 +268,10 @@ const ListProperties = () => {
                                     onChange={handleChange}
                                     required
                                 >
-                                    <option value="HOUSE">Nhà</option>
-                                    <option value="APARTMENT">Căn hộ</option>
-                                    <option value="LAND">Đất</option>
+                                    <option value="Nhà">Nhà</option>
+                                    <option value="Căn Hộ">Căn hộ</option>
+                                    <option value="Đất">Đất</option>
+                                    <option value="Chung cư">Chung cư</option>
                                 </SelectField>
                             </View>
                             <View>
@@ -392,22 +283,22 @@ const ListProperties = () => {
                                     onChange={handleChange}
                                     required
                                 >
-                                    <option value="PUBLISHED">Đã đăng</option>
-                                    <option value="NEGOTIATE">Thương lượng</option>
-                                    <option value="DEPOSIT HAS BEEN REACHED">Đã đặt cọc</option>
+                                    <option value="Đã đăng">Đã đăng</option>
+                                    <option value="Thương lượng">Thương lượng</option>
+                                    <option value="Đã đặt cọc">Đã đặt cọc</option>
                                 </SelectField>
                             </View>
                             <View>
-                                <Label htmlFor="ownerId" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
+                                <Label htmlFor="ownerName" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
                                 <SelectField
-                                    id="ownerId"
-                                    name="ownerId"
-                                    value={input.ownerId}
+                                    id="ownerName"
+                                    name="ownerName"
+                                    value={input.status}
                                     onChange={handleChange}
                                     required
                                 >
                                     {listUser.map((user) => (
-                                        <option key={user.userId} value={user.userId}>{user.name} </option>
+                                        <option key={user.userId} value={user.name}>{user.name} </option>
                                     ))}
 
                                 </SelectField>
@@ -501,8 +392,8 @@ const ListProperties = () => {
                                     onChange={handleChange}
                                     required
                                 >
-                                    <option value="SALE">Bán</option>
-                                    <option value="RENT">Cho thuê</option>
+                                    <option value="Bán">Bán</option>
+                                    <option value="Cho thuê">Cho thuê</option>
                                 </SelectField>
                             </View>
                             <View>
@@ -520,7 +411,7 @@ const ListProperties = () => {
                                 </SelectField>
                             </View>
                             <View>
-                            <Label htmlFor="status" style={{ fontSize: "20px" }}>Trạng thái</Label>
+                                <Label htmlFor="status" style={{ fontSize: "20px" }}>Trạng thái</Label>
                                 <SelectField
                                     id="status"
                                     name="status"
@@ -528,22 +419,22 @@ const ListProperties = () => {
                                     onChange={handleChange}
                                     required
                                 >
-                                    <option value="PUBLISHED">Đã đăng</option>
-                                    <option value="NEGOTIATE">Thương lượng</option>
-                                    <option value="DEPOSIT HAS BEEN REACHED">Đã đặt cọc</option>
+                                    <option value="Đã đăng">Đã đăng</option>
+                                    <option value="Thương lượng">Thương lượng</option>
+                                    <option value="Đã đặt cọc">Đã đặt cọc</option>
                                 </SelectField>
                             </View>
                             <View>
-                                <Label htmlFor="ownerId" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
+                                <Label htmlFor="ownerName" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
                                 <SelectField
-                                    id="ownerId"
-                                    name="ownerId"
-                                    value={input.ownerId}
+                                    id="ownerName"
+                                    name="ownerName"
+                                    value={input.status}
                                     onChange={handleChange}
                                     required
                                 >
                                     {listUser.map((user) => (
-                                        <option key={user.userId} value={user.userId}>{user.name} </option>
+                                        <option key={user.userId} value={user.name}>{user.name} </option>
                                     ))}
 
                                 </SelectField>
@@ -568,12 +459,12 @@ const ListProperties = () => {
             {/* Danh sách người dùng */}
             <View style={{ height: 500, margin: '20px 40px 0 40px' }}>
                 <Flex alignItems={"center"} justifyContent={"space-between"}>
-                    <Heading level={1} fontWeight={700} marginBottom={10} >Danh sách bất động sản</Heading>
+                    <Heading level={1} fontWeight={700} marginBottom={10} >Danh sách giao dịch</Heading>
                     <Button onClick={() => {
                         setTypeModal("create"); // Đặt loại modal là "create"
                         setIsOpen(true); // Mở modal
                         userAttributes();
-                    }}>Thêm bất động sản</Button>
+                    }}>Thêm giao dịch</Button>
                 </Flex>
                 <AgGridReact
                     localeText={localeText}
@@ -602,4 +493,4 @@ const ListProperties = () => {
     )
 }
 
-export default ListProperties;
+export default ListTransaction;

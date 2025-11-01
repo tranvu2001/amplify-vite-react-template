@@ -11,7 +11,7 @@ const PropertyDetail = () => {
     const { propertyId } = useParams();
     const [property, setProperty] = useState("")
 
-    
+
     const [loading, setLoading] = useState(true);
     console.log(propertyId);
 
@@ -27,20 +27,20 @@ const PropertyDetail = () => {
 
     return (
         <>
-            {loading ? 
-            <View style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "rgba(155, 150, 150, 0.3)", // Overlay màu đen mờ
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9999, // Đảm bảo lớp overlay nằm trên tất cả các thành phần khác
-            }}>
-            <Loader size="large" /> </View>:
+            {loading ?
+                <View style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(155, 150, 150, 0.3)", // Overlay màu đen mờ
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 9999, // Đảm bảo lớp overlay nằm trên tất cả các thành phần khác
+                }}>
+                    <Loader size="large" /> </View> :
                 <>
                     {/* <Header /> */}
                     <View padding="20px" style={{ backgroundColor: "#f9f9f9", borderRadius: "8px" }}>
@@ -63,28 +63,28 @@ const PropertyDetail = () => {
                                 </Flex>
                                 <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                                     <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Trạng thái</Text>
-                                    <Text fontSize={16} style={{ color: "#333" }}>{property.status}</Text>
+                                    <Text fontSize={16} style={{ color: "#333" }}>{property.status === 'DEPOSIT HAS BEEN REACHED' ? 'Đã đặt cọc' : property.status === 'PUBLISHED' ? 'Đã đăng' : property.status === 'NEGOTIATE' ? 'Thương lượng' : ''}</Text>
                                 </Flex>
                                 <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                                     <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Kiểu bất động sản</Text>
-                                    <Text fontSize={16} style={{ color: "#333" }}>{property.type}</Text>
+                                    <Text fontSize={16} style={{ color: "#333" }}>{property.type === 'HOUSE' ? 'Nhà' : property.type === 'APARTMENT' ? 'Căn hộ' : property.type === 'LAND' ? 'Đất' : ''}</Text>
                                 </Flex>
                                 <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                                     <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Danh mục</Text>
-                                    <Text fontSize={16} style={{ color: "#333" }}>{property.listingType}</Text>
+                                    <Text fontSize={16} style={{ color: "#333" }}>{property.listingType === 'RENT' ? 'Cho thuê' : property.listingType === 'SALE' ? "Bán" : ""}</Text>
                                 </Flex>
                                 <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                                     <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Ngày đăng</Text>
-                                    <Text fontSize={16} style={{ color: "#333" }}>{property.createdAt ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.createdAt)) : "Không có dữ liệu"}</Text>
+                                    <Text fontSize={16} style={{ color: "#333" }}>{property.createdAt ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.createdAt)) : ""}</Text>
                                 </Flex>
                                 <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                                     <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Ngày chỉnh sửa</Text>
-                                    <Text fontSize={16} style={{ color: "#333" }}>{property.updatedAt ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.updatedAt)) : "Không có dữ liệu"}</Text>
+                                    <Text fontSize={16} style={{ color: "#333" }}>{property.updatedAt ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.updatedAt)) : new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(property?.createdAt))}</Text>
                                 </Flex>
 
                                 <Flex justifyContent="space-between" style={{ borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                                     <Text fontSize={16} fontWeight="bold" style={{ color: "#555" }}>Người rao bán</Text>
-                                    <Text fontSize={16} style={{ color: "#333" }}>{property.ownerId}</Text>
+                                    <Text fontSize={16} style={{ color: "#333" }}>{property.userName}</Text>
                                 </Flex>
 
                             </Flex>
