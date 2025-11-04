@@ -1,0 +1,14 @@
+.msel select[multiple] option:checked {
+    background: #2563eb !important;
+    color: #fff !important;
+}
+
+.msel select[multiple]:focus option:checked {
+    background: #1d4ed8 !important;
+    color: #fff !important;
+}
+
+.msel select[multiple] option:checked:hover {
+    background: #1d4ed8 !important;
+    color: #fff !important;
+}

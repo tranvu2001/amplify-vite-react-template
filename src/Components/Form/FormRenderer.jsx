@@ -1,9 +1,86 @@
+import React from 'react';
 import {
     Flex, Grid, Fieldset, TextField, SelectField, Button,
     Table, TableBody, TableCell, TableHead, TableRow
 } from '@aws-amplify/ui-react';
+import './FormStyle.css'
 
 export default function FormRenderer({ schema }) {
+    const [values, setValues] = React.useState({});
+    const [, force] = React.useState(0);
+    
+    const setValue = (name, val) =>
+        setValues(prev => ({ ...prev, [name]: val }));
+    
+    const normOptions = (opts = []) =>
+        opts.map(o => (typeof o === 'string' ? { id: o, name: o } : o));
+    
+    React.useEffect(() => {
+        
+        const init = {};
+        schema.groups.forEach(g => {
+            g.fields.forEach(f => {
+                if (['text', 'number', 'date'].includes(f.type)) {
+                    init[f.name] = init[f.name] ?? (f.defaultValue ?? '');
+                }
+                
+                if (f.type === 'select') {
+                    const opts = normOptions(f.options);
+                    const defId =
+                    f.defaultValue ??
+                    (opts[0]?.id ?? '');
+                    init[f.name] = init[f.name] ?? defId;
+                }
+                
+                if (f.type === 'multiselect') {
+                    
+                    const defArr = Array.isArray(f.defaultValue) ? f.defaultValue : [];
+                    init[f.name] = init[f.name] ?? defArr;
+                }
+            });
+        });
+        
+        schema.setInvalidator(() => force(x => x + 1));
+        
+        setValues(prev => ({ ...init, ...prev }));
+    }, [schema]);
+    
+    React.useEffect(() => {
+        schema.setParameterGetter(() => {
+            const out = {};
+            schema.groups.forEach(g => {
+                g.fields.forEach(f => {
+                    if (['text', 'number', 'date'].includes(f.type)) {
+                        out[f.name] = values[f.name] ?? '';
+                        return;
+                    }
+                    
+                    if (f.type === 'select') {
+                        const opts = normOptions(f.options);
+                        const id = values[f.name] ?? '';
+                        const label = opts.find(o => o.id === id)?.name ?? '';
+                        out[f.name] = id;
+                        out[`${f.name}_display`] = label;
+                        return;
+                    }
+                    
+                    if (f.type === 'multiselect') {
+                        const opts = normOptions(f.options);
+                        const ids = Array.isArray(values[f.name]) ? values[f.name] : [];
+                        const labels = ids
+                        .map(id => opts.find(o => o.id === id)?.name ?? '')
+                        .filter(Boolean);
+                        out[f.name] = ids.join(',');
+                        out[`${f.name}_display`] = labels.join(',');
+                        return;
+                    }
+                    
+                });
+            });
+            return out;
+        });
+    }, [schema, values]);
+    
     return (
         <form>
         {schema.groups.map((group, gi) => (
@@ -16,24 +93,27 @@ export default function FormRenderer({ schema }) {
             {(() => {
                 const out = [];
                 const fs = group.fields;
+                
                 for (let i = 0; i < fs.length; i++) {
                     const field = fs[i];
                     
                     if (field.type === 'button') {
                         const btns = [];
-                        while (i < fs.length && fs[i].type === 'button') {
-                            btns.push(fs[i]);
-                            i++;
-                        }
+                        while (i < fs.length && fs[i].type === 'button') { btns.push(fs[i]); i++; }
                         i--;
                         out.push(
                             <Flex key={`btnrow-${i}`} alignItems="flex-end" gap="0.5rem">
                             {btns.map((b, idx) => (
                                 <Button
+                                loadingText="Đang xử lý..."
                                 key={`${b.name || b.label}-${idx}`}
                                 variation={b.variation}
                                 size="small"
-                                onClick={b.onClick}
+                                onClick={(e) => {
+                                    const ctx = { values: schema.getParameter(), event: e, schema };
+                                    if (b.onClick?.length > 0) b.onClick(ctx);
+                                    else b.onClick?.();
+                                }}
                                 style={{ height: 20, minWidth: 80 }}
                                 >
                                 {b.label}
@@ -63,6 +143,8 @@ export default function FormRenderer({ schema }) {
                             type={field.type === 'number' ? 'number' : 'text'}
                             size="small"
                             width="100%"
+                            value={values[field.name] ?? ''}
+                            onChange={(e) => setValue(field.name, e.target.value ?? '')}
                             />
                         );
                         break;
@@ -76,27 +158,57 @@ export default function FormRenderer({ schema }) {
                             type="date"
                             size="small"
                             width="100%"
+                            value={values[field.name] ?? ''}
+                            onChange={(e) => setValue(field.name, e.target.value ?? '')}
                             />
                         );
                         break;
                         
-                        case 'select':
-                        case 'multiselect':
-                        out.push(
-                            <SelectField
-                            key={`sel-${i}`}
-                            label={field.label}
-                            name={field.name}
-                            isMultiple={field.isMultiple || false}
-                            size="small"
-                            width="100%"
-                            >
-                            {field.options.map((opt) => (
-                                <option key={opt} value={opt}>{opt}</option>
-                            ))}
-                            </SelectField>
-                        );
-                        break;
+                        case 'select': {
+                            const opts = normOptions(field.options);
+                            out.push(
+                                <SelectField
+                                key={`sel-${i}`}
+                                label={field.label}
+                                name={field.name}
+                                size="small"
+                                width="100%"
+                                value={values[field.name] ?? ''}
+                                onChange={(e) => setValue(field.name, e.target.value ?? '')}
+                                >
+                                {opts.map((opt) => (
+                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                ))}
+                                </SelectField>
+                            );
+                            break;
+                        }
+                        
+                        case 'multiselect': {
+                            const opts = normOptions(field.options);
+                            const current = Array.isArray(values[field.name]) ? values[field.name] : [];
+                            out.push(
+                                <SelectField
+                                className="msel"
+                                key={`msel-${i}`}
+                                label={field.label}
+                                name={field.name}
+                                isMultiple
+                                selectSize={field.selectSize ?? 4}
+                                width="100%"
+                                value={current}
+                                onChange={(e) => {
+                                    const selectedIds = Array.from(e.target.selectedOptions || []).map(o => o.value);
+                                    setValue(field.name, selectedIds);
+                                }}
+                                >
+                                {opts.map((opt) => (
+                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                ))}
+                                </SelectField>
+                            );
+                            break;
+                        }
                         
                         case 'table':
                         out.push(
@@ -127,6 +239,7 @@ export default function FormRenderer({ schema }) {
                         break;
                     }
                 }
+                
                 return out;
             })()}
             </Grid>
