@@ -3,6 +3,7 @@ export default class FormSchema {
         this.groups = [];
         this.getParameter = null;
         this._invalidate = null;
+        this._fieldIndex = new Map();
     }
     
     addGroup(legend) {
@@ -53,5 +54,44 @@ export default class FormSchema {
         return typeof this.getParameter === 'function'
         ? this.getParameter()
         : {};
+    }
+
+    _indexField(name, group) {
+        if (!name) return;
+        const groupIdx = this.groups.indexOf(group);
+        const fieldIdx = group.fields.length - 1;
+        this._fieldIndex.set(name, { groupIdx, fieldIdx });
+    }
+
+    _getFieldRef(name) {
+        const ptr = this._fieldIndex.get(name);
+        if (!ptr) return null;
+        const grp = this.groups[ptr.groupIdx];
+        if (!grp) return null;
+        return grp.fields[ptr.fieldIdx] || null;
+    }
+
+    addAgGrid(group, { name, label, columns = [], rows = [], options = {} }) {
+        group.fields.push({
+            type: 'aggrid',
+            name, label, columns, rows, options
+        });
+        this._indexField?.(name, group);
+        return this;
+    }
+
+    setDataAgGrid(name, rows, { append = false, silent = false } = {}) {
+        const fld = this._getFieldRef(name);
+        if (!fld || fld.type !== 'aggrid') return this;
+        const next = Array.isArray(rows) ? rows : [];
+        fld.rows = append ? [ ...(fld.rows || []), ...next ] : next;
+        if (!silent) this._invalidate?.();
+        return this;
+    }
+
+    getDataAgGrid(name) {
+        const fld = this._getFieldRef(name);
+        if (!fld || fld.type !== 'aggrid') return [];
+        return Array.isArray(fld.rows) ? fld.rows : [];
     }
 }

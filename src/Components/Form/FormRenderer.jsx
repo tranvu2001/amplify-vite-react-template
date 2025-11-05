@@ -4,10 +4,34 @@ import {
     Table, TableBody, TableCell, TableHead, TableRow
 } from '@aws-amplify/ui-react';
 import './FormStyle.css'
+import AgGridField from './FormAgGrid';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function FormRenderer({ schema }) {
     const [values, setValues] = React.useState({});
     const [, force] = React.useState(0);
+    
+    const toDate = (s) => {
+        if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+        return new Date(`${s}T00:00:00`);
+    };
+    
+    const toISO = (d) => (d instanceof Date && !isNaN(d) ? d.toISOString().slice(0, 10) : '');
+    
+    const DateInput = React.forwardRef(({ value, onClick, label, name, placeholder }, ref) => (
+        <TextField
+        ref={ref}
+        label={label}
+        name={name}
+        value={value || ''}
+        placeholder={placeholder || 'dd/mm/yyyy'}
+        onClick={onClick}
+        readOnly
+        size="small"
+        width="100%"
+        />
+    ));
     
     const setValue = (name, val) =>
         setValues(prev => ({ ...prev, [name]: val }));
@@ -33,14 +57,28 @@ export default function FormRenderer({ schema }) {
                 }
                 
                 if (f.type === 'multiselect') {
-                    
                     const defArr = Array.isArray(f.defaultValue) ? f.defaultValue : [];
                     init[f.name] = init[f.name] ?? defArr;
+                }
+                
+                if (f.type === 'aggrid') {
+                    init[f.name] = init[f.name] ?? (Array.isArray(f.rows) ? f.rows : []);
                 }
             });
         });
         
-        schema.setInvalidator(() => force(x => x + 1));
+        schema.setInvalidator(() => {
+            const patch = {};
+            schema.groups.forEach(g => {
+                g.fields.forEach(f => {
+                    if (f.type === 'aggrid') {
+                        patch[f.name] = Array.isArray(f.rows) ? f.rows : [];
+                    }
+                });
+            });
+            setValues(prev => ({ ...prev, ...patch }));
+            force(x => x + 1);
+        });
         
         setValues(prev => ({ ...init, ...prev }));
     }, [schema]);
@@ -110,7 +148,7 @@ export default function FormRenderer({ schema }) {
                                 variation={b.variation}
                                 size="small"
                                 onClick={(e) => {
-                                    const ctx = { values: schema.getParameter(), event: e, schema };
+                                    const ctx = { values: schema.getParameterGetter(), event: e, schema };
                                     if (b.onClick?.length > 0) b.onClick(ctx);
                                     else b.onClick?.();
                                 }}
@@ -151,15 +189,22 @@ export default function FormRenderer({ schema }) {
                         
                         case 'date':
                         out.push(
-                            <TextField
+                            <DatePicker
                             key={`date-${i}`}
-                            label={field.label}
-                            name={field.name}
-                            type="date"
-                            size="small"
-                            width="100%"
-                            value={values[field.name] ?? ''}
-                            onChange={(e) => setValue(field.name, e.target.value ?? '')}
+                            selected={toDate(values[field.name] ?? '')}
+                            onChange={(d) => setValue(field.name, toISO(d))}
+                            customInput={<DateInput label={field.label} name={field.name} />}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="dd/mm/yyyy"
+                            isClearable
+                            showPopperArrow={false}
+                            popperPlacement="bottom-start"
+                            portalId="root"
+                            popperModifiers={[
+                                { name: 'offset', options: { offset: [0, 6] } },
+                                { name: 'preventOverflow', options: { rootBoundary: 'viewport' } },
+                                { name: 'computeStyles', options: { gpuAcceleration: false } }
+                            ]}
                             />
                         );
                         break;
@@ -234,11 +279,26 @@ export default function FormRenderer({ schema }) {
                             </div>
                         );
                         break;
-                        
+                        case 'aggrid':
+                        out.push(
+                            <AgGridField
+                            key={`ag-${i}`}
+                            field={{
+                                ...field,
+                                rows: (Array.isArray(values[field.name]) ? values[field.name] : field.rows) || []
+                            }}
+                            onChange={(name, rows) => {
+                                setValue(name, rows);
+                                schema?.setDataGrid?.(name, rows, { silent: true });
+                            }}
+                            />
+                        );
+                        break;
                         default:
                         break;
                     }
                 }
+                
                 
                 return out;
             })()}
