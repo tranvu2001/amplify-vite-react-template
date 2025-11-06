@@ -200,11 +200,6 @@ export default function FormRenderer({ schema }) {
                             showPopperArrow={false}
                             popperPlacement="bottom-start"
                             portalId="root"
-                            popperModifiers={[
-                                { name: 'offset', options: { offset: [0, 6] } },
-                                { name: 'preventOverflow', options: { rootBoundary: 'viewport' } },
-                                { name: 'computeStyles', options: { gpuAcceleration: false } }
-                            ]}
                             />
                         );
                         break;

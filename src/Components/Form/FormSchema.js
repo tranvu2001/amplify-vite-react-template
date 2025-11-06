@@ -94,4 +94,17 @@ export default class FormSchema {
         if (!fld || fld.type !== 'aggrid') return [];
         return Array.isArray(fld.rows) ? fld.rows : [];
     }
+    
+    updateSourceField(name, props) {
+        for (let g of this.groups) {
+            for (let i = 0; i < g.fields.length; i++) {
+                if (g.fields[i].name === name) {
+                    g.fields[i] = { ...g.fields[i], ...props };
+                    return g.fields[i];
+                }
+            }
+        }
+        return null;
+    }
+
 }
