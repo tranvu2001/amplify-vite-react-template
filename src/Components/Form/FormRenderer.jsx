@@ -3,7 +3,7 @@ import {
     Flex, Grid, Fieldset, TextField, SelectField, Button,
     Table, TableBody, TableCell, TableHead, TableRow
 } from '@aws-amplify/ui-react';
-import './FormStyle.css'
+import './FormStyle.css';
 import AgGridField from './FormAgGrid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,12 +12,20 @@ export default function FormRenderer({ schema }) {
     const [values, setValues] = React.useState({});
     const [, force] = React.useState(0);
     
+    const toISO = (d) =>
+        d instanceof Date && !isNaN(d)
+            ? [
+                d.getFullYear(),
+                String(d.getMonth() + 1).padStart(2, '0'),
+                String(d.getDate()).padStart(2, '0'),
+            ].join('-')
+            : '';
+
     const toDate = (s) => {
         if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
-        return new Date(`${s}T00:00:00`);
+        const [y, m, d] = s.split('-').map(Number);
+        return new Date(y, m - 1, d);
     };
-    
-    const toISO = (d) => (d instanceof Date && !isNaN(d) ? d.toISOString().slice(0, 10) : '');
     
     const DateInput = React.forwardRef(({ value, onClick, label, name, placeholder }, ref) => (
         <TextField
@@ -33,40 +41,45 @@ export default function FormRenderer({ schema }) {
         />
     ));
     
-    const setValue = (name, val) =>
+    const setValue = (name, val) => {
         setValues(prev => ({ ...prev, [name]: val }));
+    };
     
     const normOptions = (opts = []) =>
         opts.map(o => (typeof o === 'string' ? { id: o, name: o } : o));
     
     React.useEffect(() => {
-        
         const init = {};
         schema.groups.forEach(g => {
             g.fields.forEach(f => {
-                if (['text', 'number', 'date'].includes(f.type)) {
-                    init[f.name] = init[f.name] ?? (f.defaultValue ?? '');
+                if (f.isMandatory && typeof f.label === 'string') {
+                    f.label = (
+                        <>
+                        {f.label}
+                        <span style={{ color: 'red', marginLeft: 2, fontWeight: 1000 }}>*</span>
+                        </>
+                    );
                 }
-                
+
+                if (['text', 'number', 'date'].includes(f.type)) {
+                    let defaultVal = f.defaultValue;
+                    if (f.type === 'date' && defaultVal instanceof Date) defaultVal = toISO(defaultVal);
+                    init[f.name] = init[f.name] ?? (defaultVal ?? '');
+                }
                 if (f.type === 'select') {
                     const opts = normOptions(f.options);
-                    const defId =
-                    f.defaultValue ??
-                    (opts[0]?.id ?? '');
+                    const defId = f.defaultValue ?? (opts[0]?.id ?? '');
                     init[f.name] = init[f.name] ?? defId;
                 }
-                
                 if (f.type === 'multiselect') {
                     const defArr = Array.isArray(f.defaultValue) ? f.defaultValue : [];
                     init[f.name] = init[f.name] ?? defArr;
                 }
-                
                 if (f.type === 'aggrid') {
                     init[f.name] = init[f.name] ?? (Array.isArray(f.rows) ? f.rows : []);
                 }
             });
         });
-        
         schema.setInvalidator(() => {
             const patch = {};
             schema.groups.forEach(g => {
@@ -79,7 +92,6 @@ export default function FormRenderer({ schema }) {
             setValues(prev => ({ ...prev, ...patch }));
             force(x => x + 1);
         });
-        
         setValues(prev => ({ ...init, ...prev }));
     }, [schema]);
     
@@ -92,7 +104,6 @@ export default function FormRenderer({ schema }) {
                         out[f.name] = values[f.name] ?? '';
                         return;
                     }
-                    
                     if (f.type === 'select') {
                         const opts = normOptions(f.options);
                         const id = values[f.name] ?? '';
@@ -101,18 +112,14 @@ export default function FormRenderer({ schema }) {
                         out[`${f.name}_display`] = label;
                         return;
                     }
-                    
                     if (f.type === 'multiselect') {
                         const opts = normOptions(f.options);
                         const ids = Array.isArray(values[f.name]) ? values[f.name] : [];
-                        const labels = ids
-                        .map(id => opts.find(o => o.id === id)?.name ?? '')
-                        .filter(Boolean);
+                        const labels = ids.map(id => opts.find(o => o.id === id)?.name ?? '').filter(Boolean);
                         out[f.name] = ids.join(',');
                         out[`${f.name}_display`] = labels.join(',');
                         return;
                     }
-                    
                 });
             });
             return out;
@@ -131,13 +138,19 @@ export default function FormRenderer({ schema }) {
             {(() => {
                 const out = [];
                 const fs = group.fields;
-                
                 for (let i = 0; i < fs.length; i++) {
                     const field = fs[i];
                     
+                    if (field.startRow) {
+                        out.push(<div key={`br-${i}`} style={{ gridColumn: '1 / -1', height: 0 }} />);
+                    }
+                    
                     if (field.type === 'button') {
                         const btns = [];
-                        while (i < fs.length && fs[i].type === 'button') { btns.push(fs[i]); i++; }
+                        while (i < fs.length && fs[i].type === 'button') {
+                            btns.push(fs[i]);
+                            i++;
+                        }
                         i--;
                         out.push(
                             <Flex key={`btnrow-${i}`} alignItems="flex-end" gap="0.5rem">
@@ -216,7 +229,7 @@ export default function FormRenderer({ schema }) {
                                 value={values[field.name] ?? ''}
                                 onChange={(e) => setValue(field.name, e.target.value ?? '')}
                                 >
-                                {opts.map((opt) => (
+                                {opts.map(opt => (
                                     <option key={opt.id} value={opt.id}>{opt.name}</option>
                                 ))}
                                 </SelectField>
@@ -242,7 +255,7 @@ export default function FormRenderer({ schema }) {
                                     setValue(field.name, selectedIds);
                                 }}
                                 >
-                                {opts.map((opt) => (
+                                {opts.map(opt => (
                                     <option key={opt.id} value={opt.id}>{opt.name}</option>
                                 ))}
                                 </SelectField>
@@ -256,7 +269,7 @@ export default function FormRenderer({ schema }) {
                             <Table highlightOnHover size="small">
                             <TableHead>
                             <TableRow>
-                            {field.columns.map((col) => (
+                            {field.columns.map(col => (
                                 <TableCell as="th" key={col.name}>{col.label}</TableCell>
                             ))}
                             </TableRow>
@@ -264,7 +277,7 @@ export default function FormRenderer({ schema }) {
                             <TableBody>
                             {field.rows.map((row, ri) => (
                                 <TableRow key={ri}>
-                                {field.columns.map((col) => (
+                                {field.columns.map(col => (
                                     <TableCell key={col.name}>{row[col.name]}</TableCell>
                                 ))}
                                 </TableRow>
@@ -274,13 +287,14 @@ export default function FormRenderer({ schema }) {
                             </div>
                         );
                         break;
+                        
                         case 'aggrid':
                         out.push(
                             <AgGridField
                             key={`ag-${i}`}
                             field={{
                                 ...field,
-                                rows: (Array.isArray(values[field.name]) ? values[field.name] : field.rows) || []
+                                rows: Array.isArray(values[field.name]) ? values[field.name] : field.rows || []
                             }}
                             onChange={(name, rows) => {
                                 setValue(name, rows);
@@ -289,12 +303,11 @@ export default function FormRenderer({ schema }) {
                             />
                         );
                         break;
+                        
                         default:
                         break;
                     }
                 }
-                
-                
                 return out;
             })()}
             </Grid>

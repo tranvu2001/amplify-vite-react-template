@@ -1,19 +1,24 @@
-if (!window.ExcelJS)
-  	await loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js');
-if (!window.JSZip)
-  	await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
-if (!window.saveAs)
-  	await loadScript('https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js');
-
-async function loadScript(src) {
-	if (document.querySelector(`script[src="${src}"]`)) return;
-	await new Promise((res, rej) => {
+(async () => {
+	async function loadScript(src) {
+		if (document.querySelector(`script[src="${src}"]`)) return;
+		await new Promise((res, rej) => {
 		const s = document.createElement('script');
-		s.src = src; s.async = true;
-		s.onload = res; s.onerror = rej;
+		s.src = src;
+		s.async = true;
+		s.onload = res;
+		s.onerror = rej;
 		document.head.appendChild(s);
-	});
-}
+		});
+	}
+
+	if (!window.ExcelJS)
+		await loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js');
+	if (!window.JSZip)
+		await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+	if (!window.saveAs)
+		await loadScript('https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js');
+})();
+
 
 const NUMBER_FORMAT = {
 	ACCOUNTING: "_(#,##0_);_( (#,##0);_( \\-\\ ??_);_(@_)",
@@ -325,6 +330,101 @@ const createBorderWithRange = (_ws, _posStart, _posEnd, _borderOutside, _objBord
 	}
 };
 
+const renderHeaderExport = (curSheet, idxRowHeader, columns, objStyle) => {
+    const rows = [];
+    const colIndex = { value: 1 };
+    const maxDepth = { value: 1 };
+    
+    (function traverse(cols, depth) {
+        if (!rows[depth]) rows[depth] = [];
+        for (let col of cols) {
+            let cell = { caption: col.label || "", start: colIndex.value, span: 1, rowSpan: 1 };
+            if (col.columns) {
+                let start = colIndex.value;
+                maxDepth.value = Math.max(maxDepth.value, depth + 1);
+                traverse(col.columns, depth + 1);
+                cell.start = start;
+                cell.span = colIndex.value - start;
+                cell.rowSpan = 1;
+            } else {
+                colIndex.value++;
+                maxDepth.value = Math.max(maxDepth.value, depth + 1);
+                cell.rowSpan = 1;
+            }
+            rows[depth].push(cell);
+        }
+    })(columns, 0);
+
+    for (let i = 0; i < rows.length; i++) {
+        for (let cell of rows[i]) {
+            if (cell.span === 1 && cell.rowSpan === 1) {
+                cell.rowSpan = maxDepth.value - i;
+            }
+        }
+    }
+
+    for (let r = 0; r < rows.length; r++) {
+        const rowVals = [];
+        for (let cell of rows[r]) {
+            while (rowVals.length < cell.start - 1) rowVals.push("");
+            rowVals.push(cell.caption);
+        }
+        curSheet.insertRow(idxRowHeader + r, rowVals);
+    }
+
+    for (let r = 0; r < rows.length; r++) {
+        for (let cell of rows[r]) {
+            const r1 = idxRowHeader + r;
+            const r2 = r1 + cell.rowSpan - 1;
+            const c1 = cell.start;
+            const c2 = c1 + cell.span - 1;
+            if (r1 !== r2 || c1 !== c2) {
+                curSheet.mergeCells(r1, c1, r2, c2);
+            }
+        }
+    }
+
+    for (let i = 0; i < maxDepth.value; i++) {
+        const row = curSheet.getRow(idxRowHeader + i);
+        row.height = 40;
+        row.eachCell(cell => {
+            cell.font = { size: 8, bold: true, ...objStyle?.font };
+            cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFFF" }, ...objStyle?.fill };
+            cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+            cell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" }
+            };
+        });
+    }
+
+    const flatColumns = [];
+    (function flattenColumns(cols) {
+        for (let col of cols) {
+            if (col.columns) {
+                flattenColumns(col.columns);
+            } else {
+                flatColumns.push(col);
+            }
+        }
+    })(columns);
+
+    flatColumns.forEach((col, idx) => {
+        curSheet.getColumn(idx + 1).width = col.width / 10 || 15;
+    });
+
+    return {
+        arrColHeader: flatColumns.map(col => ({
+            key: col.key,
+            dataType: col.dataType,
+            width: col.width / 10 || 15
+        })),
+        col_end: flatColumns.length
+    };
+}
+
 
 
 const libXls = {
@@ -343,6 +443,7 @@ const libXls = {
 	createBorderWithRange,
 	createAlignmentWithRange,
 	insertColumn,
+	renderHeaderExport,
 };
 
 export default libXls

@@ -16,10 +16,10 @@ export default () => {
     
     let filterGroup = form.addGroup('Filters');
     form.addField(filterGroup, {
-        type: 'date', name: 'fromDate', label: 'Từ ngày', defaultValue: infoDate.firstDayOfMonth
+        type: 'date', name: 'fromDate', label: 'Từ ngày', defaultValue: infoDate.firstDayOfMonth, isMandatory: true
     });
     form.addField(filterGroup, {
-        type: 'date', name: 'toDate',   label: 'Đến ngày', defaultValue: infoDate.lastDayOfMonth
+        type: 'date', name: 'toDate',   label: 'Đến ngày', defaultValue: infoDate.lastDayOfMonth, isMandatory: true
     });
     form.addField(filterGroup, { type: 'multiselect', name: 'propertyIds', label: 'Tài sản', startRow: true, options: [] });
     form.addField(filterGroup, { type: 'multiselect', name: 'transactionType', label: 'Loại giao dịch', options: [
@@ -77,7 +77,7 @@ export default () => {
     
     return (
         <Flex direction="column" padding="1rem">
-        <h2>Rental List Report</h2>
+        <h1>Báo cáo Doanh thu</h1>
         <FormRenderer schema={form}/>
         </Flex>
     );
@@ -88,7 +88,7 @@ const onSearchResult = async (isExport) => {
         const form = FormGlobal.form;
 
         let params = form.getParameter();
-        if (!params.fromDate || !params.fromDate) {
+        if (!params.fromDate || !params.toDate) {
             alert("Vui lòng nhập from date và to date")
             return;
         }
@@ -103,14 +103,17 @@ const onSearchResult = async (isExport) => {
         form.setDataAgGrid('agGrid', results);
         
         if(isExport == "T"){
-            await onExportExcel(results, params);
+            let colExport = form.getGridColumns('agGrid');
+
+            await onExportExcel(results, params, colExport);
         }
         
     }, 'Loading…');
 }
 
 let getDataResultMapped = (properties, transactions, params) => {
-    let arrGrpMonth = [], results = [];
+    let arrGrpMonth = buildMonthRange(params.fromDate, params.toDate);;
+     let results = [];
     let fromYYYYMM  = getInfoDate(params.fromDate).YYYYMM;
     let toYYYYMM = getInfoDate(params.toDate).YYYYMM;
 
@@ -132,10 +135,10 @@ let getDataResultMapped = (properties, transactions, params) => {
         let ymDash = info['YYYY-MM'];
         
         obj['YYYY-MM'] = ymDash;
-
-        if (yyyymm >= fromYYYYMM && yyyymm <= toYYYYMM) {
-            if (!arrGrpMonth.includes(ymDash)) arrGrpMonth.push(ymDash);
-        }
+        obj.__inRange = (yyyymm >= fromYYYYMM && yyyymm <= toYYYYMM);
+        // if (yyyymm >= fromYYYYMM && yyyymm <= toYYYYMM) {
+        //     if (!arrGrpMonth.includes(ymDash)) arrGrpMonth.push(ymDash);
+        // }
     });
     
     for (let i = 0; i < arrGrpMonth.length; i++) {
@@ -234,6 +237,22 @@ let getDataResultMapped = (properties, transactions, params) => {
     return results;
 };
 
+const buildMonthRange = (fromDate, toDate) => {
+    const s = new Date(fromDate);
+    const e = new Date(toDate);
+    const start = new Date(s.getFullYear(), s.getMonth(), 1);
+    const end   = new Date(e.getFullYear(), e.getMonth(), 1);
+
+    const out = [];
+    const d = new Date(start);
+    while (d <= end) {
+        const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        out.push(ym);
+        d.setMonth(d.getMonth() + 1);
+    }
+    return out;
+};
+
 const getInfoDate = (strDate) => {
     let curDate = strDate ? new Date(strDate) : new Date();
     let objRes = {};
@@ -248,41 +267,58 @@ const getInfoDate = (strDate) => {
     return objRes
 }
 
-const onExportExcel = async(results) => {
+const onExportExcel = async(results, params, colExport) => {
     let workbook = new ExcelJS.Workbook();
     let curSheet = workbook.addWorksheet('Sheet1');
-    
-    let col_end = 8;
-    let idxRowData  = 6;
-    
-    curSheet.mergeCells('A1:'+ `${curSheet.getRow(1).getCell(col_end).address}`);
-    Object.assign(curSheet.getCell('A1'), {
-        value: `CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM`,
-        font: { name: 'Calibri', size: 12},
+    let objHeader = libXls.renderHeaderExport(curSheet, 6, colExport);
+    let col_end = objHeader.col_end;
+    let idxRowData = 7;
+
+    curSheet.pageSetup = {
+        orientation: 'landscape',
+        fitToPage: true,
+        fitToWidth: 1,
+        fitToHeight: 0,
+        horizontalCentered: true,
+        margins: {
+            left: 0,
+            right: 0,
+            top: 0.59,
+            bottom: 0.59,
+            header: 0,
+            footer: 0
+        }
+    };
+
+    curSheet.mergeCells('A3:'+ `${curSheet.getRow(3).getCell(col_end).address}`);
+    Object.assign(curSheet.getCell('A3'), {
+        value: `BÁO CÁO DOANH THU`,
+        font: { size: 12, bold: true },
         alignment: { horizontal: 'center', vertical: 'middle' }
     });
     
-    curSheet.mergeCells('A2:'+ `${curSheet.getRow(2).getCell(col_end).address}`);
-    Object.assign(curSheet.getCell('A2'), {
-        value: `Độc lập - Tự do - Hạnh phúc`,
-        font: { size: 12},
+    curSheet.mergeCells('A4:'+ `${curSheet.getRow(4).getCell(col_end).address}`);
+    Object.assign(curSheet.getCell('A4'), {
+        value: `Từ ${getInfoDate(params.fromDate)['YYYY-MM']} đến ${getInfoDate(params.toDate)['YYYY-MM']}`,
+        font: { size: 12, bold: true },
         alignment: { horizontal: 'center', vertical: 'middle' }
     });
     
-    // for(let i = 0; i < results.length; i++){
-    //     let objRes = results[i];
-    //     let idxCurRow = i + idxRowData;
-    //     let dataRow = objHeader.arrColHeader.map(obj => {
-        //         return objRes[obj.dataField];
-    //     });
+    for (let i = 0; i < results.length; i++) {
+        let objRes = results[i];
+        let idxCurRow = i + idxRowData;
+        let dataRow = objHeader.arrColHeader.map(obj => {
+            return objRes[obj.key];
+        });
     
-    //     curSheet.insertRow(idxCurRow, dataRow);
-    //     objHeader.arrColNumFmt.forEach(e=>{
-        //         curSheet.getCell(idxCurRow, e.idxCol).numFmt = e.numFmt;
-    //     })
-    
-    //     libXls.syncStyleRangeWithRowGrid(curSheet, {row: idxCurRow, col: 1}, {row: idxCurRow, col: col_end}, objRes);
-    // }
+        curSheet.insertRow(idxCurRow, dataRow);
+
+        colExport.forEach((e, idxCol)=>{
+            if (e.dataType == 'number') {
+                curSheet.getCell(idxCurRow, idxCol+1).numFmt = libXls.NUMBER_FORMAT.ACCOUNTING;
+            }
+        })
+    }
     
     libXls.createBorderWithRange(curSheet,
         {row: idxRowData, col: 1},
@@ -291,6 +327,6 @@ const onExportExcel = async(results) => {
         {rowStyle: "dotted", colStyle: "thin"}
     );
     
-    await libXls.saveWorkbook(workbook, "Bảng kê chứng từ thanh toán.xlsx");
+    await libXls.saveWorkbook(workbook, "Báo cáo doanh thu.xlsx");
     
 }

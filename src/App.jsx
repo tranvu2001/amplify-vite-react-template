@@ -9,6 +9,7 @@ import UserDetail from "./Pages/User/UserDetail";
 import ListProperties from "./Pages/Property/ListProperties";
 import PropertyDetail from "./Pages/Property/PropertyDetail";
 import RentalListReport from "./Pages/Report/RentalListReport";
+import RptRevenue from "./Pages/Report/RptRevenue";
 
 
 import { Amplify } from "aws-amplify";
@@ -84,6 +85,7 @@ function App() {
           <Route path="/list-properties" element={<ListProperties />} />
           <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
           <Route path="/report/RentalListReport" element={<RentalListReport />} />
+          <Route path="/report/RptRevenue" element={<RptRevenue />} />
           {/* <Route path="/list-transaction" element={<ListTransaction />} />
           <Route path="/list-transaction/:transactionId" element={<ListTransaction />} /> */}
         </Route>

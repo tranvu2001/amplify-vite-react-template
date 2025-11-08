@@ -11,16 +11,12 @@ export default class FormSchema {
         this.groups.push(group);
         return group;
     }
-    
-    addField(group, { type, name, label, options = [], width, isMultiple }) {
-        group.fields.push({
-            type, name, label, options,
-            isMultiple: !!isMultiple,
-            width: width || '200px'
-        });
+
+    addField(group, { type, name, label, options = [], width = '200px', isMultiple, ...rest }) {
+        group.fields.push({ type, name, label, options, width, isMultiple: !!isMultiple, ...rest });
         return this;
     }
-    
+
     addButton(group, { name, label, variation = 'primary', onClick }) {
         group.fields.push({ type: 'button', name, label, variation, onClick });
         return this;
@@ -93,6 +89,18 @@ export default class FormSchema {
         const fld = this._getFieldRef(name);
         if (!fld || fld.type !== 'aggrid') return [];
         return Array.isArray(fld.rows) ? fld.rows : [];
+    }
+    
+    getField(name) {
+        for (const g of this.groups) {
+            const found = g.fields.find(f => f.name === name);
+            if (found) return found;
+        }
+        return null;
+    }
+
+    getGridColumns(name) {
+        return this.getField(name)?.columns ?? [];
     }
     
     updateSourceField(name, props) {
