@@ -276,7 +276,7 @@ const ListProperties = () => {
         setTypeModal("update"); // Cập nhật loại modal
         setIsOpen(true);
         setPropertyId(rowData.propertyId);
-        
+
     }
 
     const renderContentModal = (type) => {
@@ -288,8 +288,9 @@ const ListProperties = () => {
                         <Button onClick={closeModal}>Đóng</Button>
                     </Flex>
                     <form onSubmit={handleSubmitAddProperty}>
-                        <Flex direction="column" gap={16}>
-                            <View>
+                        <Flex gap={16} wrap="wrap">
+                            {/* Hàng 1 */}
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="title" style={{ fontSize: "20px" }}>Tên</Label>
                                 <TextField
                                     id="title"
@@ -300,7 +301,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="address" style={{ fontSize: "20px" }}>Địa chỉ</Label>
                                 <TextField
                                     id="address"
@@ -311,7 +312,9 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+
+                            {/* Hàng 2 */}
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="district" style={{ fontSize: "20px" }}>Quận</Label>
                                 <TextField
                                     id="district"
@@ -322,7 +325,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="city" style={{ fontSize: "20px" }}>Thành phố</Label>
                                 <TextField
                                     id="city"
@@ -333,7 +336,9 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+
+                            {/* Hàng 3 */}
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="price" style={{ fontSize: "20px" }}>Giá</Label>
                                 <TextField
                                     id="price"
@@ -345,18 +350,20 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="currency" style={{ fontSize: "20px" }}>Đơn vị tiền tệ</Label>
                                 <TextField
                                     id="currency"
                                     name="currency"
-                                    placeholder="Nhập đơn vị tiền tệ (VD: VND)"
+                                    placeholder="VD: VND"
                                     value={input.currency}
                                     onChange={handleChange}
                                     required
                                 />
                             </View>
-                            <View>
+
+                            {/* Hàng 4 */}
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="listingType" style={{ fontSize: "20px" }}>Loại danh mục</Label>
                                 <SelectField
                                     id="listingType"
@@ -369,7 +376,7 @@ const ListProperties = () => {
                                     <option value="RENT">Cho thuê</option>
                                 </SelectField>
                             </View>
-                            <View>
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="type" style={{ fontSize: "20px" }}>Loại tài sản</Label>
                                 <SelectField
                                     id="type"
@@ -383,7 +390,9 @@ const ListProperties = () => {
                                     <option value="LAND">Đất</option>
                                 </SelectField>
                             </View>
-                            <View>
+
+                            {/* Hàng 5 */}
+                            <View style={{ flex: 1, minWidth: "45%" }}>
                                 <Label htmlFor="status" style={{ fontSize: "20px" }}>Trạng thái</Label>
                                 <SelectField
                                     id="status"
@@ -397,7 +406,136 @@ const ListProperties = () => {
                                     <option value="DEPOSIT HAS BEEN REACHED">Đã đặt cọc</option>
                                 </SelectField>
                             </View>
-                            <View>
+                            <View style={{ flex: 1, minWidth: "45%" }}>
+                                <Label htmlFor="ownerId" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
+                                <SelectField
+                                    id="ownerId"
+                                    name="ownerId"
+                                    value={input.ownerId}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    {listUser.map((user) => (
+                                        <option key={user.userId} value={user.userId}>{user.name}</option>
+                                    ))}
+                                </SelectField>
+                            </View>
+                        </Flex>
+
+                        <Button type="submit" style={{ marginTop: "20px" }}>Thêm</Button>
+                    </form>
+
+                    {/* <form onSubmit={handleSubmitAddProperty}>
+                        <Flex gap={16}>
+                            <View >
+                                <Label htmlFor="title" style={{ fontSize: "20px" }}>Tên</Label>
+                                <TextField
+                                    id="title"
+                                    name="title"
+                                    placeholder="Nhập tên tài sản"
+                                    value={input.title}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </View>
+                            <View >
+                                <Label htmlFor="address" style={{ fontSize: "20px" }}>Địa chỉ</Label>
+                                <TextField
+                                    id="address"
+                                    name="address"
+                                    placeholder="Nhập địa chỉ"
+                                    value={input.address}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </View>
+                            <View >
+                                <Label htmlFor="district" style={{ fontSize: "20px" }}>Quận</Label>
+                                <TextField
+                                    id="district"
+                                    name="district"
+                                    placeholder="Nhập quận"
+                                    value={input.district}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </View>
+                            <View >
+                                <Label htmlFor="city" style={{ fontSize: "20px" }}>Thành phố</Label>
+                                <TextField
+                                    id="city"
+                                    name="city"
+                                    placeholder="Nhập thành phố"
+                                    value={input.city}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </View>
+                            <View >
+                                <Label htmlFor="price" style={{ fontSize: "20px" }}>Giá</Label>
+                                <TextField
+                                    id="price"
+                                    name="price"
+                                    type="number"
+                                    placeholder="Nhập giá"
+                                    value={input.price}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </View>
+                            <View >
+                                <Label htmlFor="currency" style={{ fontSize: "20px" }}>Đơn vị tiền tệ</Label>
+                                <TextField
+                                    id="currency"
+                                    name="currency"
+                                    placeholder="Nhập đơn vị tiền tệ (VD: VND)"
+                                    value={input.currency}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </View>
+                            <View >
+                                <Label htmlFor="listingType" style={{ fontSize: "20px" }}>Loại danh mục</Label>
+                                <SelectField
+                                    id="listingType"
+                                    name="listingType"
+                                    value={input.listingType}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="SALE">Bán</option>
+                                    <option value="RENT">Cho thuê</option>
+                                </SelectField>
+                            </View>
+                            <View >
+                                <Label htmlFor="type" style={{ fontSize: "20px" }}>Loại tài sản</Label>
+                                <SelectField
+                                    id="type"
+                                    name="type"
+                                    value={input.type}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="HOUSE">Nhà</option>
+                                    <option value="APARTMENT">Căn hộ</option>
+                                    <option value="LAND">Đất</option>
+                                </SelectField>
+                            </View>
+                            <View >
+                                <Label htmlFor="status" style={{ fontSize: "20px" }}>Trạng thái</Label>
+                                <SelectField
+                                    id="status"
+                                    name="status"
+                                    value={input.status}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="PUBLISHED">Đã đăng</option>
+                                    <option value="NEGOTIATE">Thương lượng</option>
+                                    <option value="DEPOSIT HAS BEEN REACHED">Đã đặt cọc</option>
+                                </SelectField>
+                            </View>
+                            <View >
                                 <Label htmlFor="ownerId" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
                                 <SelectField
                                     id="ownerId"
@@ -414,7 +552,7 @@ const ListProperties = () => {
                             </View>
                         </Flex>
                         <Button type="submit" style={{ marginTop: "20px" }}>Thêm</Button>
-                    </form>
+                    </form> */}
                 </>
 
             case "update":
@@ -424,8 +562,8 @@ const ListProperties = () => {
                         <Button onClick={closeModal}>Đóng</Button>
                     </Flex>
                     <form onSubmit={handleSubmitUpdateProperty}>
-                        <Flex direction="column" gap={16}>
-                            <View>
+                        <Flex wrap={"wrap"} gap={16}>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="title" style={{ fontSize: "20px" }}>Tên</Label>
                                 <TextField
                                     id="title"
@@ -436,7 +574,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="address" style={{ fontSize: "20px" }}>Địa chỉ</Label>
                                 <TextField
                                     id="address"
@@ -447,7 +585,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="district" style={{ fontSize: "20px" }}>Quận</Label>
                                 <TextField
                                     id="district"
@@ -458,7 +596,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="city" style={{ fontSize: "20px" }}>Thành phố</Label>
                                 <TextField
                                     id="city"
@@ -469,7 +607,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="price" style={{ fontSize: "20px" }}>Giá</Label>
                                 <TextField
                                     id="price"
@@ -481,7 +619,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="currency" style={{ fontSize: "20px" }}>Đơn vị tiền tệ</Label>
                                 <TextField
                                     id="currency"
@@ -492,7 +630,7 @@ const ListProperties = () => {
                                     required
                                 />
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="listingType" style={{ fontSize: "20px" }}>Loại danh mục</Label>
                                 <SelectField
                                     id="listingType"
@@ -505,7 +643,7 @@ const ListProperties = () => {
                                     <option value="RENT">Cho thuê</option>
                                 </SelectField>
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="type" style={{ fontSize: "20px" }}>Loại tài sản</Label>
                                 <SelectField
                                     id="type"
@@ -519,8 +657,8 @@ const ListProperties = () => {
                                     <option value="LAND">Đất</option>
                                 </SelectField>
                             </View>
-                            <View>
-                            <Label htmlFor="status" style={{ fontSize: "20px" }}>Trạng thái</Label>
+                            <View flex={1} minWidth={"45%"}>
+                                <Label htmlFor="status" style={{ fontSize: "20px" }}>Trạng thái</Label>
                                 <SelectField
                                     id="status"
                                     name="status"
@@ -533,7 +671,7 @@ const ListProperties = () => {
                                     <option value="DEPOSIT HAS BEEN REACHED">Đã đặt cọc</option>
                                 </SelectField>
                             </View>
-                            <View>
+                            <View flex={1} minWidth={"45%"}>
                                 <Label htmlFor="ownerId" style={{ fontSize: "20px" }}>Tên chủ sở hữu</Label>
                                 <SelectField
                                     id="ownerId"

@@ -254,11 +254,12 @@ function ListUser() {
             case "create":
                 return <><Flex gap={16} justifyContent={"space-between"} alignItems={"center"} marginBottom={20}>
                     <Heading level={2} ref={(_subtitle) => (subtitle = _subtitle)}>Thêm người dùng</Heading>
-                    <Button onClick={closeModal}>close</Button>
+                    <Button onClick={closeModal}>Đóng</Button>
                 </Flex>
                     <form onSubmit={handleSubmitAddUser}>
-                        <Flex direction="column" gap={16}>
-                            <View>
+                        <Flex  gap={16}>
+                       
+                            <View flex={1}>
                                 <Label htmlFor="name" style={{ fontSize: "20px" }}>Tên</Label>
                                 <TextField
                                     size="large" id="name" name="name"
@@ -267,7 +268,7 @@ function ListUser() {
                                     onChange={handleChange}
                                 />
                             </View>
-                            <View>
+                            <View flex={1}>
                                 <Label htmlFor="email" style={{ fontSize: "20px" }}>Email</Label>
                                 <TextField
                                     size="large" id="email" name="email"
@@ -283,11 +284,11 @@ function ListUser() {
             case "update":
                 return <><Flex gap={16} justifyContent={"space-between"} alignItems={"center"} marginBottom={20}>
                     <Heading level={2} ref={(_subtitle) => (subtitle = _subtitle)}>Sửa người dùng</Heading>
-                    <Button onClick={closeModal}>close</Button>
+                    <Button onClick={closeModal}>Đóng</Button>
                 </Flex>
                     <form onSubmit={handleSubmitUpdateUser}>
-                        <Flex direction="column" gap={16}>
-                            <View>
+                        <Flex gap={16}>
+                            <View flex={1}>
                                 <Label htmlFor="name" style={{ fontSize: "20px" }}>Tên</Label>
                                 <TextField
                                     size="large" id="name" name="name"
@@ -296,7 +297,7 @@ function ListUser() {
                                     onChange={handleChange}
                                 />
                             </View>
-                            <View>
+                            <View flex={1}>
                                 <Label htmlFor="email" style={{ fontSize: "20px" }}>Email</Label>
                                 <TextField
                                     size="large" id="email" name="email"
