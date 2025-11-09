@@ -38,13 +38,17 @@ export default function Sidebar() {
                 <NavLink to="/list-properties" style={linkStyle}>
                     Quản lý bất động sản
                 </NavLink>
-                
-                {/* <NavLink to="/report/RentalListReport" style={linkStyle}>
-                    Rental List Report
-                </NavLink> */}
 
-                <NavLink to="/report/RptRevenue" style={linkStyle}>
+                <NavLink to="/report-revenue" style={linkStyle}>
                     Báo cáo doanh thu
+                </NavLink>
+                
+                <NavLink to="/map-property-portfolio" style={linkStyle}>
+                    Bản đồ bất động sản
+                </NavLink>
+                
+                <NavLink to="/map-property-detail" style={linkStyle}>
+                    Bản đồ chi tiết bất động sản
                 </NavLink>
 
                 {/* <NavLink to="/list-transaction" style={linkStyle}>

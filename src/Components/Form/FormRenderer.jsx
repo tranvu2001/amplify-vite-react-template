@@ -7,8 +7,9 @@ import './FormStyle.css';
 import AgGridField from './FormAgGrid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import ReactSelect from 'react-select';
 
-export default function FormRenderer({ schema }) {
+export default function FormRenderer({ schema, handlers = {} }) {
     const [values, setValues] = React.useState({});
     const [, force] = React.useState(0);
     
@@ -47,6 +48,18 @@ export default function FormRenderer({ schema }) {
     
     const normOptions = (opts = []) =>
         opts.map(o => (typeof o === 'string' ? { id: o, name: o } : o));
+
+    
+    
+    const fireChange = React.useCallback((name, val) => {
+        setValue(name, val);
+        handlers?.onFieldChange?.(name, val, {
+        values: schema.getParameterGetter?.() ?? {},
+        schema,
+        });
+    }, [handlers, schema, setValue]);
+
+    const toRS = (opts=[]) => (opts || []).map(o => ({ value: o.id ?? o.value, label: o.name ?? o.label }));
     
     React.useEffect(() => {
         const init = {};
@@ -195,7 +208,7 @@ export default function FormRenderer({ schema }) {
                             size="small"
                             width="100%"
                             value={values[field.name] ?? ''}
-                            onChange={(e) => setValue(field.name, e.target.value ?? '')}
+                            onChange={(e) => fireChange(field.name, e.target.value ?? '')}
                             />
                         );
                         break;
@@ -205,7 +218,7 @@ export default function FormRenderer({ schema }) {
                             <DatePicker
                             key={`date-${i}`}
                             selected={toDate(values[field.name] ?? '')}
-                            onChange={(d) => setValue(field.name, toISO(d))}
+                            onChange={(d) => fireChange(field.name, toISO(d))}
                             customInput={<DateInput label={field.label} name={field.name} />}
                             dateFormat="dd/MM/yyyy"
                             placeholderText="dd/mm/yyyy"
@@ -218,21 +231,23 @@ export default function FormRenderer({ schema }) {
                         break;
                         
                         case 'select': {
-                            const opts = normOptions(field.options);
+                            const opts = toRS(normOptions(field.options));
+                            const cur  = values[field.name] ?? '';
                             out.push(
-                                <SelectField
-                                key={`sel-${i}`}
-                                label={field.label}
-                                name={field.name}
-                                size="small"
-                                width="100%"
-                                value={values[field.name] ?? ''}
-                                onChange={(e) => setValue(field.name, e.target.value ?? '')}
-                                >
-                                {opts.map(opt => (
-                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
-                                ))}
-                                </SelectField>
+                                <div key={`sel-${i}`} style={{ width: '100%' }}>
+                                <label style={{ display:'block', fontSize:12, marginBottom:4 }}>{field.label}</label>
+                                <ReactSelect
+                                    classNamePrefix="rs"
+                                    value={opts.find(o => String(o.value) === String(cur)) || null}
+                                    onChange={(opt) => fireChange(field.name, opt ? opt.value : '')}
+                                    options={opts}
+                                    placeholder={field.placeholder ?? 'Chọn...'}
+                                    maxMenuHeight={240}
+                                    menuPortalTarget={document.body}
+                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    isClearable
+                                />
+                                </div>
                             );
                             break;
                         }
@@ -252,7 +267,7 @@ export default function FormRenderer({ schema }) {
                                 value={current}
                                 onChange={(e) => {
                                     const selectedIds = Array.from(e.target.selectedOptions || []).map(o => o.value);
-                                    setValue(field.name, selectedIds);
+                                    fireChange(field.name, selectedIds);
                                 }}
                                 >
                                 {opts.map(opt => (
