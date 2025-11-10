@@ -1,4 +1,3 @@
-// MapAddress.jsx
 import React from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -7,6 +6,7 @@ import { withIdentityPoolId } from '@aws/amazon-location-utilities-auth-helper';
 const REGION = 'ap-southeast-1';
 const IDENTITY_POOL_ID = 'ap-southeast-1:fa2ef108-06d9-47ae-a216-dcdeb35f8359';
 const MAP_NAME = 'explore.map.Grab';
+const STYLE_URL = `https://maps.geo.${REGION}.amazonaws.com/maps/v0/maps/${MAP_NAME}/style-descriptor`;
 
 const SAMPLE_PROPERTIES = [
     {
@@ -47,15 +47,14 @@ export default function MapAddress() {
         (async () => {
             const authHelper = await withIdentityPoolId(IDENTITY_POOL_ID, { region: REGION });
             const authOpts = authHelper.getMapAuthenticationOptions();
-            const styleUrl = `https://maps.geo.${REGION}.amazonaws.com/maps/v0/maps/${MAP_NAME}/style-descriptor`;
             
-            const signed = authOpts.transformRequest(styleUrl, 'Style');
+            const signed = authOpts.transformRequest(STYLE_URL, 'Style');
             const ok = await fetch(signed.url, { headers: signed.headers }).then(r => r.ok);
             if (!ok || cancelled || !mapRef.current) return;
             
             map = new maplibregl.Map({
                 container: mapRef.current,
-                style: styleUrl,
+                style: STYLE_URL,
                 center: [106.78, 10.80],
                 zoom: 12,
                 ...authOpts
