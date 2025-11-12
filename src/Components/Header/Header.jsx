@@ -3,6 +3,7 @@ import { Link, Flex, Button, Image, Text } from '@aws-amplify/ui-react';
 import './Header.css'
 import { fetchAuthSession, fetchUserAttributes, signOut } from 'aws-amplify/auth';
 import { useEffect, useState } from "react";
+import logo from "../../assets/Untitled design.png";
 
 function Header() {
 
@@ -27,7 +28,9 @@ function Header() {
       <Flex justifyContent={"space-between"} height={"100%"}>
 
         <div className="header-logo">
-          <Image width={"90%"} height={"90%"} src="https://staticfile.batdongsan.com.vn/images/logo/standard/red/logo.svg" />
+          <Image width={"96%"} height={"90%"} src={logo} />
+          
+
         </div>
 
         <Flex justifyContent={"space-around"} alignItems={"center"} flex={"1"}  >
