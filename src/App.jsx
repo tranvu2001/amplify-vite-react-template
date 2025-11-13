@@ -87,7 +87,7 @@ function App() {
           <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
           <Route path="/report-revenue" element={<RptRevenue />} />
           <Route path="/map-property-portfolio" element={<PropertyPortfolioMap />} />
-          <Route path="/map-property-detail" element={<PropertyDetailMap />} />
+          {/* <Route path="/map-property-detail" element={<PropertyDetailMap />} /> */}
           {/* <Route path="/list-transaction" element={<ListTransaction />} />
           <Route path="/list-transaction/:transactionId" element={<ListTransaction />} /> */}
         </Route>

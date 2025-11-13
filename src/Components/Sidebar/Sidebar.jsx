@@ -47,9 +47,9 @@ export default function Sidebar() {
                     Bản đồ bất động sản
                 </NavLink>
                 
-                <NavLink to="/map-property-detail" style={linkStyle}>
+                {/* <NavLink to="/map-property-detail" style={linkStyle}>
                     Bản đồ chi tiết bất động sản
-                </NavLink>
+                </NavLink> */}
 
                 {/* <NavLink to="/list-transaction" style={linkStyle}>
                     Quản lý giao dịch
