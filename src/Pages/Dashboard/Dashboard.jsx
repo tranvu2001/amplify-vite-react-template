@@ -13,11 +13,11 @@ export default function DashboardLayout({ user, signOut }) {
       {/* Khu vực chính */}
       <View flex="1" padding="1.5rem" overflow="auto">
         {/* Header */}
-        <Card variation="outlined" marginBottom="1rem" padding="1rem">
+        {/* <Card variation="outlined" marginBottom="1rem" padding="1rem">
           <Flex justifyContent="space-between" alignItems="center">
             <Heading level={3}>Xin chào, {user?.attributes?.name || user?.username} 👋</Heading>
           </Flex>
-        </Card>
+        </Card> */}
 
         {/* Nội dung động */}
         <Outlet />
