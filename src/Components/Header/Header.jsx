@@ -13,7 +13,7 @@ function Header() {
   useEffect(() => {
     fetchAuthSession().then(session => {
       console.log('Full user session:', session);
-      // Trả về token, thời gian hết hạn, v.v.
+      
       setCheck(session);
     });
   }, [])
