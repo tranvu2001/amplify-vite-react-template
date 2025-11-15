@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "react-router";
+import { NavLink, Link as RouterLink } from "react-router";
 import { Link, Flex, Button, Image, Text } from '@aws-amplify/ui-react';
 import './Header.css'
 import { fetchAuthSession, fetchUserAttributes, signOut } from 'aws-amplify/auth';
@@ -8,19 +8,19 @@ import logo from "../../assets/Untitled design.png";
 function Header() {
 
   // const {signOut, user} = props;
-  const [check, setCheck] =  useState(null);
+  const [check, setCheck] = useState(null);
 
   useEffect(() => {
     fetchAuthSession().then(session => {
       console.log('Full user session:', session);
-      
+
       setCheck(session);
     });
   }, [])
 
-    
 
-  
+
+
 
   return (
     <div className="header">
@@ -29,7 +29,7 @@ function Header() {
 
         <div className="header-logo">
           <Image width={"96%"} height={"90%"} src={logo} />
-          
+
 
         </div>
 
@@ -54,6 +54,12 @@ function Header() {
           {/* <Link className="header-nav-link" as={RouterLink} to="/register">Đăng kí</Link> */}
           {/* <Button size="large" onClick={userAttributes}>Đăng tin</Button> */}
           {/* <Button size="large" onClick={signOut}>Đăng xuất</Button> */}
+          {check != null ? <NavLink to="/profile">
+            Profile
+          </NavLink> : null}
+          {check != null ? <NavLink to="/profilev2">
+            Profile v2
+          </NavLink> : null}
           {check != null ? <Button size="large" onClick={signOut}>Đăng xuất</Button> : null}
         </Flex>
       </Flex>

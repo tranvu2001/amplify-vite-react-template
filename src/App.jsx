@@ -20,6 +20,8 @@ import { fetchAuthSession, fetchUserAttributes, signOut } from 'aws-amplify/auth
 import Header from "./Components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ListTransaction from "./Pages/Transaction/ListTransaction";
+import Profile from "./Pages/User/Profile";
+// import Profilev2 from "./Pages/User/Profilev2";
 
 
 // Amplify.configure({
@@ -40,6 +42,7 @@ Amplify.configure({
 
 
 function App() {
+  const [user, setUser] = useState(null);
 
   const userAttributes = () => {
     fetchUserAttributes().then(attributes => {
@@ -70,11 +73,14 @@ function App() {
     >
 
       {({ signOut, user }) => (
+        <>
         <main>
           <h1>Hello {user?.name}</h1>
           <button onClick={signOut}>Sign out</button>
           <button onClick={userAttributes}>Get User Attributes</button>
         </main>
+        
+        </>
       )}
 
       <Routes>
@@ -87,6 +93,8 @@ function App() {
           <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
           <Route path="/report-revenue" element={<RptRevenue />} />
           <Route path="/map-property-portfolio" element={<PropertyPortfolioMap />} />
+          <Route path="/profile" element={<Profile/>} />
+          {/* <Route path="/profilev2" element={<Profilev2/>} /> */}
           {/* <Route path="/map-property-detail" element={<PropertyDetailMap />} /> */}
           {/* <Route path="/list-transaction" element={<ListTransaction />} />
           <Route path="/list-transaction/:transactionId" element={<ListTransaction />} /> */}
