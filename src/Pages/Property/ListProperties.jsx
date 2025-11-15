@@ -94,12 +94,12 @@ const ListProperties = () => {
                     >
                         Sửa
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={() => handleDeleteProperty(params.data)}
 
                     >
                         Xóa
-                    </Button>
+                    </Button> */}
                 </Flex>
             )
         }
@@ -107,7 +107,13 @@ const ListProperties = () => {
     ])
 
     const handlePropertyDetail = (rowData) => {
-        navigate(`/list-properties/${rowData.propertyId}`);
+        // navigate(`/list-properties/${rowData.propertyId}`);
+        navigate(`/list-properties/${rowData.propertyId}?mode=view`);
+    }
+
+    const handleUpdateProperty  = (rowData) => {
+        // navigate(`/list-properties/${rowData.propertyId}`);
+        navigate(`/list-properties/${rowData.propertyId}?mode=edit`);
     }
 
     const handleDeleteProperty = (rowData) => {
@@ -259,25 +265,25 @@ const ListProperties = () => {
         // console.log("abc")
     }
 
-    const handleUpdateProperty = (rowData) => {
-        console.log("Cập nhật thông tin bất động sản", rowData);
-        setInput({
-            title: rowData.title,
-            address: rowData.address,
-            district: rowData.district,
-            city: rowData.city,
-            price: rowData.price,
-            currency: rowData.currency,
-            listingType: rowData.listingType,
-            type: rowData.type,
-            status: rowData.status,
-            ownerId: rowData.ownerId,
-        });
-        setTypeModal("update"); // Cập nhật loại modal
-        setIsOpen(true);
-        setPropertyId(rowData.propertyId);
+    // const handleUpdateProperty = (rowData) => {
+    //     console.log("Cập nhật thông tin bất động sản", rowData);
+    //     setInput({
+    //         title: rowData.title,
+    //         address: rowData.address,
+    //         district: rowData.district,
+    //         city: rowData.city,
+    //         price: rowData.price,
+    //         currency: rowData.currency,
+    //         listingType: rowData.listingType,
+    //         type: rowData.type,
+    //         status: rowData.status,
+    //         ownerId: rowData.ownerId,
+    //     });
+    //     setTypeModal("update"); // Cập nhật loại modal
+    //     setIsOpen(true);
+    //     setPropertyId(rowData.propertyId);
 
-    }
+    // }
 
     const renderContentModal = (type) => {
         switch (type) {

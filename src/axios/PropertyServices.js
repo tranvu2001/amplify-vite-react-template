@@ -42,6 +42,10 @@ class PropertyServices {
             { id: 'WAREHOUSE', name: 'Warehouse' }
         ]
     }
+
+    updateCoordinates(propertyId, payload) {
+        return axios.patch(`/properties/${propertyId}/coordinates`, payload);
+    }
 }
 
 export default new PropertyServices()

@@ -7,7 +7,7 @@ import Contact from "./Pages/Contact";
 import ListUser from "./Pages/User/ListUser";
 import UserDetail from "./Pages/User/UserDetail";
 import ListProperties from "./Pages/Property/ListProperties";
-import PropertyDetail from "./Pages/Property/PropertyDetail";
+import PropertyDetail from "./Pages/Property/PropertyDetailV2";
 import RptRevenue from "./Pages/Report/RptRevenue";
 import PropertyPortfolioMap from "./Pages/Map/PropertyPortfolioMap";
 import PropertyDetailMap from "./Pages/Map/PropertyDetailMap";
