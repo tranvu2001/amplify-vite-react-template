@@ -125,12 +125,12 @@ function ListUser() {
                     >
                         Sửa
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={() => handleDeleteUser(params.data)}
 
                     >
                         Xóa
-                    </Button>
+                    </Button> */}
                 </Flex>
             )
         }
@@ -139,15 +139,16 @@ function ListUser() {
     const [typeModal, setTypeModal] = useState("");
     const handleUserDetail = (rowData) => {
         console.log("Xem chi tiết người dùng", rowData);
-        navigate(`/list-user/${rowData.userId}`);
+        navigate(`/list-user/${rowData.userId}?mode=view`);
     };
 
     const handleUpdateUser = (rowData) => {
-        console.log("Cập nhật thông tin người dùng", rowData);
-        setInput({name: rowData.name, email: rowData.email})// Điền dữ liệu vào form
-        setTypeModal("update"); // Cập nhật loại modal
-        setIsOpen(true);
-        setUserId(rowData.userId);
+        // console.log("Cập nhật thông tin người dùng", rowData);
+        // setInput({name: rowData.name, email: rowData.email})// Điền dữ liệu vào form
+        // setTypeModal("update"); // Cập nhật loại modal
+        // setIsOpen(true);
+        // setUserId(rowData.userId);
+        navigate(`/list-user/${rowData.userId}?mode=edit`);
     };
 
     const handleDeleteUser = (rowData) => {
@@ -327,9 +328,10 @@ function ListUser() {
                 <Flex alignItems={"center"} justifyContent={"space-between"}>
                     <Heading level={1} fontWeight={700} marginBottom={10} >Danh sách người dùng</Heading>
                     <Button onClick={() => {
-                        setTypeModal("create"); // Đặt loại modal là "create"
-                        setInput({ name: "", email: "" }); // Reset các trường input
-                        setIsOpen(true); // Mở modal
+                        // setTypeModal("create"); // Đặt loại modal là "create"
+                        // setInput({ name: "", email: "" }); // Reset các trường input
+                        // setIsOpen(true); // Mở modal
+                        navigate("/list-user/new");
                      }}>Thêm người dùng</Button>
                 </Flex>
                 <AgGridReact

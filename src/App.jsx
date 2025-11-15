@@ -21,6 +21,7 @@ import Header from "./Components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ListTransaction from "./Pages/Transaction/ListTransaction";
 import Profile from "./Pages/User/Profile";
+import UserDetailV2 from "./Pages/User/UserDetailV2";
 // import Profilev2 from "./Pages/User/Profilev2";
 
 
@@ -88,7 +89,8 @@ function App() {
         <Route path="/" element={<Dashboard />} >
           <Route index element={<ListUser />} />
           <Route path="/list-user" element={<ListUser />} />
-          <Route path="/list-user/:userId" element={<UserDetail />} />
+          {/* <Route path="/list-user/:userId" element={<UserDetail />} /> */}
+          <Route path="/list-user/:userId" element={<UserDetailV2 />} />
           <Route path="/list-properties" element={<ListProperties />} />
           <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
           <Route path="/report-revenue" element={<RptRevenue />} />
