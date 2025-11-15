@@ -107,12 +107,10 @@ const ListProperties = () => {
     ])
 
     const handlePropertyDetail = (rowData) => {
-        // navigate(`/list-properties/${rowData.propertyId}`);
         navigate(`/list-properties/${rowData.propertyId}?mode=view`);
     }
 
     const handleUpdateProperty  = (rowData) => {
-        // navigate(`/list-properties/${rowData.propertyId}`);
         navigate(`/list-properties/${rowData.propertyId}?mode=edit`);
     }
 
@@ -713,11 +711,14 @@ const ListProperties = () => {
             <View style={{ height: 500, margin: '20px 40px 0 40px' }}>
                 <Flex alignItems={"center"} justifyContent={"space-between"}>
                     <Heading level={1} fontWeight={700} marginBottom={10} >Danh sách bất động sản</Heading>
-                    <Button onClick={() => {
-                        setTypeModal("create"); // Đặt loại modal là "create"
-                        setIsOpen(true); // Mở modal
-                        userAttributes();
-                    }}>Thêm bất động sản</Button>
+                    <Button
+                        onClick={() => {
+                            navigate("/list-properties/new");//todo
+                            //navigate(`/list-properties/${rowData.propertyId}?mode=view`);
+                        }}
+                    >
+                        Thêm bất động sản
+                    </Button>
                 </Flex>
                 <AgGridReact
                     localeText={localeText}

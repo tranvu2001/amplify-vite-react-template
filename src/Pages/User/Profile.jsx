@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchAuthSession  } from "aws-amplify/auth";
 import { View, Card, Heading, Text, Button, Image } from "@aws-amplify/ui-react";
 // import { Auth } from "aws-amplify";
-import { Auth, Amplify } from "aws-amplify";
+// import { Auth, Amplify } from "aws-amplify";
 
 
 export default function Profile() {
