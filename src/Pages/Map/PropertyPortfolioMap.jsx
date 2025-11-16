@@ -478,7 +478,6 @@ return (
             left: 16,
             bottom: 16,
             width: 360,
-            background: 'white',
             borderRadius: 12,
             boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
             padding: 16

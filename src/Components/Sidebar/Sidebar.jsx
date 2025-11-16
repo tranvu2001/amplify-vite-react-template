@@ -31,8 +31,8 @@ export default function Sidebar() {
             </Text>
 
             <Flex direction="column" gap="1rem">
-                <NavLink to="/list-user" style={linkStyle}>
-                    Quản lý người dùng
+                <NavLink to="/list-tenant" style={linkStyle}>
+                    Quản lý người thuê
                 </NavLink>
 
                 <NavLink to="/list-properties" style={linkStyle}>

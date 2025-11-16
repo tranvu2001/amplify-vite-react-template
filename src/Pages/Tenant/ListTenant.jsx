@@ -3,56 +3,44 @@ import { AgGridReact } from "ag-grid-react";
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import PropertyServices from "../../axios/PropertyServices";
+import TenantServices from "../../axios/TenantServices.js";
 
-const ListProperties = () => {
+function ListTenant() {
     const navigate = useNavigate();
     const [rowData, setRowData] = useState([]);
 
     useEffect(() => {
-        PropertyServices.getAllProperties().then((response) => {
-            setRowData(response.data || []);
+        TenantServices.getAllUser().then((res) => {
+            setRowData(res.data || []);
         });
     }, []);
 
-    const handlePropertyDetail = (row) => {
-        navigate(`/list-properties/${row.propertyId}?mode=view`);
+    const handleTenantDetail = (row) => {
+        navigate(`/list-tenant/${row.tenantId}?mode=view`);
     };
 
-    const handleUpdateProperty = (row) => {
-        navigate(`/list-properties/${row.propertyId}?mode=edit`);
+    const handleUpdateTenant = (row) => {
+        navigate(`/list-tenant/${row.tenantId}?mode=edit`);
     };
 
     const [colDefs] = useState([
-        { headerName: "Mã BĐS", field: "propertyId", flex: 0.8 },
-        { headerName: "Tiêu đề", field: "title", flex: 1.4 },
-        { headerName: "Địa chỉ", field: "address", flex: 1.4 },
-        { headerName: "Phường/Xã", field: "ward", flex: 1 },
-        { headerName: "Tỉnh/Thành", field: "province", flex: 1.2 },
-        { headerName: "Loại", field: "type", flex: 0.8 },
-        { headerName: "Hình thức", field: "listingType", flex: 0.9 },
+        { headerName: "Id", field: "tenantId", flex: 0.7 },
+        { headerName: "Tên người thuê", field: "fullName", flex: 1.2 },
+        { headerName: "Email", field: "email", flex: 1.4 },
+        { headerName: "Số điện thoại", field: "phone", flex: 1 },
         {
-            headerName: "Giá",
-            field: "price",
-            flex: 1,
-            valueFormatter: (params) => {
-                if (params.value == null) return "";
-                const currency = params.data?.currency || "VND";
-                return new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency,
-                }).format(params.value);
-            },
+            headerName: "Trạng thái",
+            field: "status",
+            flex: 0.9,
         },
-        { headerName: "Trạng thái", field: "status", flex: 0.9 },
         {
-            headerName: "Thao tác",
             field: "actions",
+            headerName: "Thao tác",
             flex: 1,
             cellRenderer: (params) => (
                 <Flex gap={8} margin={10}>
-                    <Button onClick={() => handlePropertyDetail(params.data)}>Xem</Button>
-                    <Button onClick={() => handleUpdateProperty(params.data)}>Sửa</Button>
+                    <Button onClick={() => handleTenantDetail(params.data)}>Xem</Button>
+                    <Button onClick={() => handleUpdateTenant(params.data)}>Sửa</Button>
                 </Flex>
             ),
         },
@@ -67,7 +55,7 @@ const ListProperties = () => {
 
     const pagination = true;
     const paginationPageSize = 500;
-    const paginationPageSizeSelector = [10, 200, 500, 1000];
+    const paginationPageSizeSelector = [200, 500, 1000];
 
     const localeText = {
         page: "Trang",
@@ -105,22 +93,22 @@ const ListProperties = () => {
     };
 
     return (
-        <View id="list-properties">
+        <View id="list-tenant">
             <View style={{ height: 500, margin: "20px 40px 0 40px" }}>
                 <Flex alignItems="center" justifyContent="space-between">
                     <Heading level={1} fontWeight={700} marginBottom={10}>
-                        Danh sách bất động sản
+                        Danh sách người thuê
                     </Heading>
-                    <Button onClick={() => navigate("/list-properties/new")}>
-                        Thêm bất động sản
+                    <Button onClick={() => navigate("/list-tenant/new")}>
+                        Thêm người thuê
                     </Button>
                 </Flex>
 
                 <AgGridReact
                     localeText={localeText}
                     rowData={rowData}
-                    columnDefs={colDefs}
                     rowSelection={rowSelection}
+                    columnDefs={colDefs}
                     pagination={pagination}
                     paginationPageSize={paginationPageSize}
                     paginationPageSizeSelector={paginationPageSizeSelector}
@@ -128,6 +116,6 @@ const ListProperties = () => {
             </View>
         </View>
     );
-};
+}
 
-export default ListProperties;
+export default ListTenant;

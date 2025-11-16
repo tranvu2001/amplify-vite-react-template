@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 
 
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import Home from "./Pages/Home";
-import Contact from "./Pages/Contact";
-import ListUser from "./Pages/User/ListUser";
-import UserDetail from "./Pages/User/UserDetail";
+import ListTenant from "./Pages/Tenant/ListTenant";
 import ListProperties from "./Pages/Property/ListProperties";
 import PropertyDetail from "./Pages/Property/PropertyDetail";
 import RptRevenue from "./Pages/Report/RptRevenue";
@@ -20,17 +17,7 @@ import Header from "./Components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ListTransaction from "./Pages/Transaction/ListTransaction";
 import Profile from "./Pages/User/Profile";
-import UserDetailV2 from "./Pages/User/UserDetailV2";
-// import Profilev2 from "./Pages/User/Profilev2";
-
-
-// Amplify.configure({
-//   aws_project_region: 'ap-southeast-1',
-//   aws_cognito_region: 'ap-southeast-1',
-//   aws_user_pools_id: 'ap-southeast-1_3ToXzXlfr',
-//   aws_user_pools_web_client_id: '3kuimt6jmmqq66rs339klfrra1',
-//   aws_mandatory_sign_in: "enable",
-// });
+import TenantDetail from "./Pages/Tenant/TenantDetail";
 
 Amplify.configure({
   aws_project_region: 'ap-southeast-1',
@@ -47,12 +34,10 @@ function App() {
   const userAttributes = () => {
     fetchUserAttributes().then(attributes => {
       console.log('Full user attributes:', attributes);
-      // Ví dụ: attributes.email, attributes.name, attributes.birthdate, ...
     });
 
     fetchAuthSession().then(session => {
       console.log('Full user session:', session);
-      // Trả về token, thời gian hết hạn, v.v.
     });
 
 
@@ -84,12 +69,10 @@ function App() {
       )}
 
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<Dashboard />} >
-          <Route index element={<ListUser />} />
-          <Route path="/list-user" element={<ListUser />} />
-          {/* <Route path="/list-user/:userId" element={<UserDetail />} /> */}
-          <Route path="/list-user/:userId" element={<UserDetailV2 />} />
+          <Route index element={<ListTenant />} />
+          <Route path="/list-tenant" element={<ListTenant />} />
+          <Route path="/list-tenant/:tenantId" element={<TenantDetail />} />
           <Route path="/list-properties" element={<ListProperties />} />
           <Route path="/list-properties/:propertyId" element={<PropertyDetail />} />
           <Route path="/report-revenue" element={<RptRevenue />} />
