@@ -7,10 +7,9 @@ import Contact from "./Pages/Contact";
 import ListUser from "./Pages/User/ListUser";
 import UserDetail from "./Pages/User/UserDetail";
 import ListProperties from "./Pages/Property/ListProperties";
-import PropertyDetail from "./Pages/Property/PropertyDetailV2";
+import PropertyDetail from "./Pages/Property/PropertyDetail";
 import RptRevenue from "./Pages/Report/RptRevenue";
 import PropertyPortfolioMap from "./Pages/Map/PropertyPortfolioMap";
-import PropertyDetailMap from "./Pages/Map/PropertyDetailMap";
 
 
 import { Amplify } from "aws-amplify";
@@ -96,10 +95,6 @@ function App() {
           <Route path="/report-revenue" element={<RptRevenue />} />
           <Route path="/map-property-portfolio" element={<PropertyPortfolioMap />} />
           <Route path="/profile" element={<Profile/>} />
-          {/* <Route path="/profilev2" element={<Profilev2/>} /> */}
-          {/* <Route path="/map-property-detail" element={<PropertyDetailMap />} /> */}
-          {/* <Route path="/list-transaction" element={<ListTransaction />} />
-          <Route path="/list-transaction/:transactionId" element={<ListTransaction />} /> */}
         </Route>
 
       </Routes>
