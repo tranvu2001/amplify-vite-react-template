@@ -9,7 +9,7 @@ const IDENTITY_POOL_ID = 'ap-southeast-1:fa2ef108-06d9-47ae-a216-dcdeb35f8359';
 const MAP_NAME = 'explore.map.Grab';
 const STYLE_URL = `https://maps.geo.${REGION}.amazonaws.com/maps/v0/maps/${MAP_NAME}/style-descriptor`;
 
-const TYPES = ['Căn hộ', 'Nhà phố', 'Văn phòng', 'Shophouse'];
+const TYPES = ['Căn hộ', 'Nhà phố', 'Văn phòng', 'Kho'];
 const STATUSES = ['Đang thuê', 'Đang trống', 'Đã đặt cọc'];
 
 const groupBy = (arr, key) =>
@@ -325,6 +325,7 @@ return (
         top: 16,
         right: 16,
         width: 360,
+        background: '#eef2ff',
         borderRadius: 12,
         boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
         padding: 16

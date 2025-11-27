@@ -22,7 +22,7 @@ export default () => {
         type: 'date', name: 'toDate',   label: 'Đến ngày', defaultValue: infoDate.lastDayOfMonth, isMandatory: true
     });
     form.addField(filterGroup, { type: 'multiselect', name: 'propertyIds', label: 'Tài sản', startRow: true, options: [] });
-    form.addField(filterGroup, { type: 'multiselect', name: 'transactionType', label: 'Loại giao dịch', options: [
+    form.addField(filterGroup, { type: 'multiselect', name: 'type', label: 'Loại giao dịch', options: [
         { id: 'RENT',  name: 'RENT' },
         { id: 'PAYMENT',  name: 'PAYMENT' },
         { id: 'MAINTENANCE',  name: 'MAINTENANCE' }
@@ -123,10 +123,10 @@ let getDataResultMapped = (properties, transactions, params) => {
         transactions = transactions.filter(e => propertyIds.includes(e.propertyId))
     }
     
-    if (params.transactionType) {
-        let types  = params.transactionType.split(',');
+    if (params.type) {
+        let types  = params.type.split(',');
 
-        transactions = transactions.filter(e => types.includes(e.transactionType))
+        transactions = transactions.filter(e => types.includes(e.type))
     }
     
     transactions.forEach(obj => {
@@ -166,7 +166,7 @@ let getDataResultMapped = (properties, transactions, params) => {
         let minRev = 0;
         
         arrTran.forEach(t => {
-            let type = (t.transactionType || '').toUpperCase();
+            let type = (t.type || '').toUpperCase();
             let amount = +t.amount || 0;
             let cost = +t.cost || 0;
             

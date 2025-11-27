@@ -533,90 +533,36 @@ const PropertyDetail = () => {
                                 />
                             </View>
                         </Flex>
-
-                        {/* Danh mục / Loại / Trạng thái */}
-                        <Flex direction={{ base: "column", large: "row" }} gap="16px">
-                            <View flex="1">
-                                <label
-                                    style={{
-                                        fontSize: 12,
-                                        color: "#6b7280",
-                                        marginBottom: 4,
-                                        display: "block",
-                                    }}
-                                >
-                                    Danh mục
-                                </label>
-                                <CustomSelect
-                                    value={formData.listingType}
-                                    onChange={(val) => updateField("listingType", val)}
-                                    placeholder="Chọn danh mục"
-                                    options={[
-                                        { id: "SALE", name: "Bán" },
-                                        { id: "RENT", name: "Cho thuê" },
-                                    ]}
-                                    isDisabled={!isEditMode}
-                                />
-                            </View>
-
-                            <View flex="1">
-                                <label
-                                    style={{
-                                        fontSize: 12,
-                                        color: "#6b7280",
-                                        marginBottom: 4,
-                                        display: "block",
-                                    }}
-                                >
-                                    Kiểu bất động sản
-                                </label>
-                                <CustomSelect
-                                    value={formData.type}
-                                    onChange={(val) => updateField("type", val)}
-                                    placeholder="Chọn loại"
-                                    options={[
-                                        { id: "HOUSE", name: "Nhà" },
-                                        { id: "APARTMENT", name: "Căn hộ" },
-                                        { id: "LAND", name: "Đất" },
-                                    ]}
-                                    isDisabled={!isEditMode}
-                                />
-                            </View>
-
-                            <View flex="1">
-                                <label
-                                    style={{
-                                        fontSize: 12,
-                                        color: "#6b7280",
-                                        marginBottom: 4,
-                                        display: "block",
-                                    }}
-                                >
-                                    Trạng thái
-                                </label>
-                                <CustomSelect
-                                    value={formData.status}
-                                    onChange={(val) => updateField("status", val)}
-                                    placeholder="Chọn trạng thái"
-                                    options={[
-                                        { id: "PUBLISHED", name: "Đã đăng" },
-                                        { id: "NEGOTIATE", name: "Thương lượng" },
-                                        {
-                                            id: "DEPOSIT HAS BEEN REACHED",
-                                            name: "Đã đặt cọc",
-                                        },
-                                    ]}
-                                    isDisabled={!isEditMode}
-                                />
-                            </View>
-                        </Flex>
-
-                        {/* Info thêm */}
+                        
                         {!isCreate && property && (
                             <Flex
                                 direction={{ base: "column", large: "row" }}
                                 gap="16px"
                             >
+                                <View flex="1">
+                                    <label
+                                        style={{
+                                            fontSize: 12,
+                                            color: "#6b7280",
+                                            marginBottom: 4,
+                                            display: "block",
+                                        }}
+                                    >
+                                        Kiểu bất động sản
+                                    </label>
+                                    <CustomSelect
+                                        value={formData.type}
+                                        onChange={(val) => updateField("type", val)}
+                                        placeholder="Chọn loại"
+                                        options={[
+                                            { id: "HOUSE", name: "Nhà" },
+                                            { id: "APARTMENT", name: "Căn hộ" },
+                                            { id: "LAND", name: "Đất" },
+                                        ]}
+                                        isDisabled={!isEditMode}
+                                    />
+                                </View>
+
                                 <View flex="1">
                                     <Text fontSize={13} color="#6b7280">
                                         Ngày đăng
@@ -648,13 +594,6 @@ const PropertyDetail = () => {
                                               }).format(new Date(property.createdAt))
                                             : ""}
                                     </Text>
-                                </View>
-
-                                <View flex="1">
-                                    <Text fontSize={13} color="#6b7280">
-                                        Người rao bán
-                                    </Text>
-                                    <Text fontSize={15}>{property.userName}</Text>
                                 </View>
                             </Flex>
                         )}

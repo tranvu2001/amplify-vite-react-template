@@ -68,7 +68,7 @@ const TenantDetail = () => {
                 address: "",
                 dateOfBirth: "",
                 phone: "",
-                nationalId: "",
+                identityNumber: "",
                 status: "ACTIVE",
                 note: "",
             });
@@ -87,7 +87,7 @@ const TenantDetail = () => {
                     address: t.address || "",
                     dateOfBirth: t.dateOfBirth || "",
                     phone: t.phone || "",
-                    nationalId: t.nationalId || "",
+                    identityNumber: t.identityNumber || "",
                     status: t.status || "ACTIVE",
                     note: t.note || "",
                     createdAt: t.createdAt,
@@ -124,7 +124,7 @@ const TenantDetail = () => {
                 address: t.address || "",
                 dateOfBirth: t.dateOfBirth || "",
                 phone: t.phone || "",
-                nationalId: t.nationalId || "",
+                identityNumber: t.identityNumber || "",
                 status: t.status || "ACTIVE",
                 note: t.note || "",
                 createdAt: t.createdAt,
@@ -326,9 +326,9 @@ const TenantDetail = () => {
                             <View flex="1">
                                 <TextField
                                     label="CMND/CCCD"
-                                    value={formData.nationalId}
+                                    value={formData.identityNumber}
                                     isDisabled={!isEditMode}
-                                    onChange={(e) => updateField("nationalId", e.target.value)}
+                                    onChange={(e) => updateField("identityNumber", e.target.value)}
                                 />
                             </View>
                         </Flex>
